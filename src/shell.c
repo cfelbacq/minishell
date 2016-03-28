@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:57:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/28 13:21:41 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/28 16:19:53 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,16 @@ int		interpreteur(char **command, t_list *start_env)
 		change_directory(start_env, command);
 		return (1);
 	}
-	if (command != NULL && ft_strcmp(command[0], "env") == 0 \
-			&& command[1] == NULL)
+	if (command != NULL && ft_strcmp(command[0], "env") == 0)
 	{
-		print_list(start_env);
-		return (1);
+		if (env(command, start_env) == 1)
+			return (1);
 	}
+/*	if (command != NULL && ft_strcmp(command[0], "setenv") == 0)
+	{
+		start_env = ft_setenv(command, start_env);
+		return (1);
+	}*/
 	if (command != NULL && ft_strcmp(command[0], "exit") == 0)
 		exit(0);
 	return (0);
@@ -32,8 +36,8 @@ int		interpreteur(char **command, t_list *start_env)
 
 void	sys_command(char **path, char **ar)
 {
-	pid_t pid;
-	int i;
+	pid_t	pid;
+	int		i;
 
 	i = 0;
 	pid = fork();
@@ -46,7 +50,7 @@ void	sys_command(char **path, char **ar)
 		}
 	}
 	else if (pid < 0)
-		ft_putstr("fork error");
+		ft_putstr("fork_err");
 	else
 		wait(&i);
 }
@@ -55,7 +59,7 @@ void	shell(t_list *start_env, char **path)
 {
 	char *line;
 	char **ar;
-	
+
 	ar = NULL;
 	line = NULL;
 	ft_putstr("$> ");

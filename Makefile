@@ -6,7 +6,7 @@
 #    By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/24 12:32:29 by cfelbacq          #+#    #+#              #
-#    Updated: 2016/03/28 13:23:50 by cfelbacq         ###   ########.fr        #
+#    Updated: 2016/03/28 14:08:10 by cfelbacq         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,14 +17,16 @@ SRC = src/main.c \
 	  src/shell.c \
 	  src/tools.c \
 	  src/cd.c \
-	  src/init.c
+	  src/init.c \
+	  src/setenv.c \
 
 OBJ = main.o \
 	  env.o \
 	  shell.o \
 	  tools.o \
 	  cd.o \
-	  init.o
+	  init.o \
+	  setenv.o
 
 libft = libft/libft.a
 

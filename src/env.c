@@ -6,17 +6,17 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:28 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/28 13:22:50 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/28 16:03:59 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*get_elem_env(t_list *start_env, char *to_find, int size_to_find)
+char	*get_value_env(t_list *start_env, char *to_find, int size_to_find)
 {
-	int i;
-	char **tmp;
-	t_list *tmp_l;
+	int		i;
+	char	**tmp;
+	t_list	*tmp_l;
 
 	tmp_l = start_env;
 	tmp = NULL;
@@ -31,4 +31,14 @@ char	*get_elem_env(t_list *start_env, char *to_find, int size_to_find)
 		tmp_l = tmp_l->next;
 	}
 	return (NULL);
+}
+
+int		env(char **command, t_list *start_env)
+{
+	if (command[1] == NULL)
+	{
+		print_list(start_env);
+		return (1);
+	}
+	return (0);
 }
