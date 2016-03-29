@@ -6,18 +6,18 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 13:20:21 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/28 13:21:43 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/28 15:11:17 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	**init_path(char **path, t_list	*env)
+char	**init_path(char **path, t_list *env)
 {
 	int i;
 
 	i = 0;
-	path = (ft_strsplit((get_elem_env(env, "PATH", ft_strlen("PATH"))), ':'));
+	path = (ft_strsplit((get_value_env(env, "PATH", ft_strlen("PATH"))), ':'));
 	while (path[i] != NULL)
 	{
 		path[i] = ft_strjoin(path[i], "/");
@@ -28,9 +28,9 @@ char	**init_path(char **path, t_list	*env)
 
 t_list	*init_env(char **env)
 {
-	t_list *start;
-	t_list *tmp;
-	int i;
+	t_list	*start;
+	t_list	*tmp;
+	int		i;
 
 	i = 0;
 	start = ft_lstnew(env[i], ft_strlen(env[i]));

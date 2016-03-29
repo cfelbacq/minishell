@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 13:19:16 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/28 13:19:42 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/29 16:09:15 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	change_directory(t_list *start_env, char **ar)
 {
-	if (ar[1] == NULL)
-		chdir(get_elem_env(start_env, "HOME", 4));
+	if (ar[1] == NULL || ft_strcmp(ar[1], "~") == 0)
+		chdir(get_value_env(start_env, "HOME", 4));
 	else if (len_of_double_tab(ar) == 2)
 		chdir(ar[1]);
 	else

@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:49 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/28 16:04:03 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/29 13:24:13 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include "../libft/libft.h"
 # include "../libft/get_next_line.h"
 
+int		len_of_name(char *str);
+t_list	*ft_unsetenv(char **command, t_list *start_env);
 t_list	*ft_setenv(char **command, t_list *start_env);
 int		env(char **command, t_list *start_env);
 void	print_list(t_list *start);
