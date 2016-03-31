@@ -26,7 +26,7 @@ int		interpreteur(char **command, t_list **start_env)
 	}
 	if (command != NULL && ft_strcmp(command[0], "setenv") == 0)
 	{
-		*start_env = ft_setenv(command, *start_env);
+		*start_env = ft_setenv(command[1], *start_env);
 		return (1);
 	}
 	if (command != NULL && ft_strcmp(command[0], "unsetenv") == 0)
@@ -80,7 +80,7 @@ void	shell(t_list *start_env, char **path)
 	{
 		line = ft_strtrim(line);
 		ar = ft_strsplit(line, ' ');
-		if (interpreteur(ar, &start_env) == 0)
+		if (*ar != NULL && interpreteur(ar, &start_env) == 0)
 			sys_command(path, ar);
 		ft_putstr("$> ");
 	}

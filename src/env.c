@@ -35,10 +35,23 @@ char	*get_value_env(t_list *start_env, char *to_find, int size_to_find)
 
 int		env(char **command, t_list *start_env)
 {
+	int i;
+
+	i = 0;
 	if (command[1] == NULL)
 	{
 		print_list(start_env);
 		return (1);
+	}
+	else
+	{
+		while (command[i] != NULL)
+		{
+			if (check_egal(command[i]) == 1)
+				ft_setenv(command[i], start_env);
+			i++;				
+		}
+		return (1);	
 	}
 	return (0);
 }

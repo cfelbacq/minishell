@@ -13,14 +13,15 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <unistd.h>
-# include <stdlib.h>
-# include "../libft/libft.h"
-# include "../libft/get_next_line.h"
+#include <unistd.h>
+#include <stdlib.h>
+#include "../libft/libft.h"
+#include "../libft/get_next_line.h"
 
+int		check_egal(char *tmp);
 int		len_of_name(char *str);
 t_list	*ft_unsetenv(char **command, t_list *start_env);
-t_list	*ft_setenv(char **command, t_list *start_env);
+t_list	*ft_setenv(char *command, t_list *start_env);
 int		env(char **command, t_list *start_env);
 void	print_list(t_list *start);
 void	put_double_tab(char **tab);

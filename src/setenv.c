@@ -36,25 +36,28 @@ int	len_of_name(char *str)
 	return (i);
 }
 
-t_list	*ft_setenv(char **command, t_list *start_env)
+t_list	*ft_setenv(char *command, t_list *start_env)
 {
 	t_list *tmp;
 	char *tmp1;
 	t_list *new;
 	t_list *previous;
 
-	if (command[1] == NULL)
+	if (command == NULL)
+	{
+		print_list(start_env);
 		return (start_env);
+	}
 	previous = NULL;
 	tmp1 = NULL;
 	tmp = start_env;
 	while (tmp != NULL)
 	{
-		if (ft_strncmp(tmp->content, command[1], len_of_name(command[1])) == 0)
+		if (ft_strncmp(tmp->content, command, len_of_name(command)) == 0)
 		{
 			free(tmp->content);
-			tmp->content = ft_strdup(command[1]);
-			tmp->content_size = ft_strlen(command[1]) * sizeof(char) + 1;
+			tmp->content = ft_strdup(command);
+			tmp->content_size = ft_strlen(command) * sizeof(char) + 1;
 			if (check_egal(tmp->content) == 0)
 				tmp->content = ft_strjoin(tmp->content, "=");
 			return (start_env);
@@ -62,7 +65,7 @@ t_list	*ft_setenv(char **command, t_list *start_env)
 		previous = tmp;
 		tmp = tmp->next;
 	}
-	tmp1 = ft_strdup(command[1]);
+	tmp1 = ft_strdup(command);
 	if (check_egal(tmp1) == 0)
 		tmp1 = ft_strjoin(tmp1, "=");
 	previous->next = ft_lstnew(tmp1, ft_strlen(tmp1) + 1);
