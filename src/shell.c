@@ -6,11 +6,13 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:57:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/29 16:39:43 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/01 16:44:23 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+extern char **environ;
 
 int		interpreteur(char **command, t_list **start_env)
 {
@@ -31,7 +33,7 @@ int		interpreteur(char **command, t_list **start_env)
 	}
 	if (command != NULL && ft_strcmp(command[0], "unsetenv") == 0)
 	{
-		*start_env = ft_unsetenv(command, *start_env);
+		*start_env = ft_unsetenv(command[1], *start_env);
 		return (1);
 	}
 	if (command != NULL && ft_strcmp(command[0], "exit") == 0)
@@ -68,16 +70,20 @@ void	sys_command(char **path, char **ar)
 		wait(&i);
 }
 
-void	shell(t_list *start_env, char **path)
+void	shell(void)
 {
 	char *line;
 	char **ar;
+	t_list *start_env;
+	char **path;
 
 	ar = NULL;
 	line = NULL;
 	ft_putstr("$> ");
 	while (get_next_line(0, &line))
 	{
+		start_env = init_env(environ);
+		path = init_path(path, start_env);
 		line = ft_strtrim(line);
 		ar = ft_strsplit(line, ' ');
 		if (*ar != NULL && interpreteur(ar, &start_env) == 0)
