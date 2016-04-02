@@ -45,3 +45,27 @@ int		len_of_double_tab(char **tab)
 		i++;
 	return (i);
 }
+
+int	check_egal(char *tmp)
+{
+	int i;
+
+	i = 0;
+	while (tmp[i] != '\0')
+	{
+		if (tmp[i] == '=')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+int	len_of_name(char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[i] != '=' && str[i] != '\0')
+		i++;
+	return (i);
+}

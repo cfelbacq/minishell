@@ -12,30 +12,6 @@
 
 #include "minishell.h"
 
-int	check_egal(char *tmp)
-{
-	int i;
-
-	i = 0;
-	while (tmp[i] != '\0')
-	{
-		if (tmp[i] == '=')
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
-int	len_of_name(char *str)
-{
-	int i;
-
-	i = 0;
-	while (str[i] != '=' && str[i] != '\0')
-		i++;
-	return (i);
-}
-
 t_list	*ft_setenv(char *command, t_list *start_env)
 {
 	t_list *tmp;
@@ -43,6 +19,11 @@ t_list	*ft_setenv(char *command, t_list *start_env)
 	t_list *new;
 	t_list *previous;
 
+	if (start_env == NULL)
+	{
+		start_env = ft_lstnew(command, ft_strlen(command));
+		return (start_env);
+	}
 	if (command == NULL)
 	{
 		print_list(start_env);

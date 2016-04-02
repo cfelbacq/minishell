@@ -18,6 +18,12 @@
 #include "../libft/libft.h"
 #include "../libft/get_next_line.h"
 
+extern char **environ;
+
+int		interpreteur(char **command, t_list **start_env);
+void	sys_command(char **path, char **ar);
+char	**lst_to_tab(t_list *start_env);
+t_list	*lstdup(t_list *to_copy);
 int		check_egal(char *tmp);
 int		len_of_name(char *str);
 t_list	*ft_unsetenv(char *command, t_list *start_env);
@@ -32,4 +38,5 @@ void	change_directory(t_list *start_env, char **ar);
 void	print_list(t_list *start);
 void	shell(void);
 char	*get_value_env(t_list *start_env, char *to_find, int size_to_find);
+
 #endif

@@ -16,6 +16,7 @@ SRC = src/main.c \
 	  src/env.c \
 	  src/shell.c \
 	  src/tools.c \
+	  src/tools2.c \
 	  src/cd.c \
 	  src/init.c \
 	  src/setenv.c \
@@ -25,6 +26,7 @@ OBJ = main.o \
 	  env.o \
 	  shell.o \
 	  tools.o \
+	  tools2.o \
 	  cd.o \
 	  init.o \
 	  setenv.o \
