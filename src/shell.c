@@ -6,13 +6,11 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:57:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/01 16:44:23 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/04 12:50:55 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-extern char **environ;
 
 int		interpreteur(char **command, t_list **start_env)
 {
@@ -22,10 +20,7 @@ int		interpreteur(char **command, t_list **start_env)
 		return (1);
 	}
 	if (ft_strcmp(command[0], "env") == 0)
-	{
-		if (env(command, *start_env) == 1)
-			return (1);
-	}
+		return (env(command, *start_env));
 	if (ft_strcmp(command[0], "setenv") == 0)
 	{
 		*start_env = ft_setenv(command[1], *start_env);
@@ -33,7 +28,7 @@ int		interpreteur(char **command, t_list **start_env)
 	}
 	if (ft_strcmp(command[0], "unsetenv") == 0)
 	{
-		*start_env = ft_unsetenv(command[1], *start_env);
+		ft_unsetenv(command[1], *start_env);
 		return (1);
 	}
 	if (ft_strcmp(command[0], "exit") == 0)
@@ -41,7 +36,7 @@ int		interpreteur(char **command, t_list **start_env)
 	return (0);
 }
 
-void	sys_command(char **path, char **ar)
+void	sys_command(char **path, char **ar, char **env)
 {
 	pid_t	pid;
 	int		i;
@@ -54,12 +49,12 @@ void	sys_command(char **path, char **ar)
 	{
 		while (path[i] != NULL)
 		{
-				err = execve(ft_strjoin(path[i], ar[0]), ar, NULL);
+				err = execve(ft_strjoin(path[i], ar[0]), ar, env);
 				i++;
 		}
 		if (err == -1)
 		{
-			ft_putstr("zsh: command not found: ");
+			ft_putstr("minishell: command not found: ");
 			ft_putendl(ar[0]);
 		}
 		exit(0);
@@ -76,7 +71,7 @@ void	shell(void)
 	char **ar;
 	t_list *start_env;
 	char **path;
-	
+
 	ar = NULL;
 	line = NULL;
 	start_env = init_env(environ);
@@ -88,7 +83,7 @@ void	shell(void)
 		if (*ar != NULL && interpreteur(ar, &start_env) == 0)
 		{
 			path = init_path(path, start_env);
-			sys_command(path, ar);
+			sys_command(path, ar, lst_to_tab(start_env));
 		}
 		ft_putstr("$> ");
 	}

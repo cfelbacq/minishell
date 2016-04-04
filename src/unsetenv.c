@@ -6,26 +6,42 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/29 12:36:35 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/01 13:31:11 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/04 12:08:40 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_list	*ft_unsetenv(char *command, t_list *start_env)
+static	int		check_unset_ar(char *command)
 {
-	t_list *tmp;
-	t_list *tmp2;
-
 	if (command == NULL)
-		return (start_env);
+	{
+		ft_putendl("unsetenv: not enough arguments");
+		return (0);
+	}
+	return (1);
+}
+
+static	int		check_valid_unset(char *command)
+{
 	if (check_egal(command) == 1)
 	{
 		ft_putstr("env: ");
 		ft_putstr("unsetenv ");
 		ft_putstr(command);
 		ft_putendl(": Invalid argument");
+		return (0);
 	}
+	return (1);
+}
+
+t_list			*ft_unsetenv(char *command, t_list *start_env)
+{
+	t_list *tmp;
+	t_list *tmp2;
+
+	if (check_unset_ar(command) != 1 || check_valid_unset(command) != 1)
+		return (NULL);
 	tmp = start_env;
 	tmp2 = NULL;
 	while (tmp != NULL)
@@ -39,7 +55,7 @@ t_list	*ft_unsetenv(char *command, t_list *start_env)
 				start_env = tmp->next;
 			free(tmp);
 			tmp = NULL;
-				return (start_env);
+			return (start_env);
 		}
 		tmp2 = tmp;
 		tmp = tmp->next;

@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:28 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/03 14:37:20 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/04 13:29:31 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,83 +55,103 @@ char **split_after_env(char **tab, int i)
 	return (tab2);
 }
 
+static	int	u_opt(void)
+{
+	ft_putendl("env: option requires an argument -- u");
+	return (1);
+}
+
+int		env_flags(int *i, char **command, t_list **new_env)
+{
+	while (command[*i] != NULL && command[*i][0] == '-'\
+			&& check_egal(command[*i]) == 0)
+	{
+		if (ft_strcmp(command[*i], "-i") == 0 \
+				|| ft_strcmp(command[*i], "-") == 0)
+		{
+			*new_env = NULL;
+			*i = *i + 1;
+		}
+		else if (ft_strcmp(command[*i], "-u") == 0)
+		{
+			if (command[*i + 1] == NULL)
+				return (u_opt());
+			if (ft_unsetenv(command[*i + 1], *new_env) == NULL)
+				return (1);
+			*i = *i + 2;
+		}
+		else
+		{
+			ft_putendl("env: option illegal");
+			break ;
+		}
+	}
+	return (0);
+}
+
+int	test_access(char *command, char **path)
+{
+	int j;
+	int err;
+
+	err = 0;
+	j = 0;
+	while (path[j] != NULL)
+	{
+		err = access(ft_strjoin(path[j], command), F_OK);
+		if (err == 0)
+			return (err);
+		j++;
+	}
+	return (err);
+}
+
+void	print_env_err(char *str)
+{
+	ft_putstr("env: ");
+	ft_putstr(str);
+	ft_putendl(": No such file or directory");
+}
+
+int		env_ar(char **command, t_list *new_env, int *i, char **path)
+{
+	char **env;
+	char **tab;
+
+	env = NULL;
+	tab = NULL;
+	while (command[*i] != NULL && check_egal(command[*i]) == 1)
+	{
+		new_env = ft_setenv(command[*i], new_env);
+		*i = *i + 1;
+	}
+	if (command[*i] == NULL)
+		print_list(new_env);
+	else
+	{
+		env = lst_to_tab(new_env);
+		tab = split_after_env(command, *i);
+		if (test_access(command[*i], path) == 0)
+		{
+			if (interpreteur(tab, &new_env) == 0)
+				sys_command(path, tab, lst_to_tab(new_env));
+		}
+		else
+			print_env_err(command[*i]);
+	}
+	return (1);
+}
+
 int		env(char **command, t_list *start_env)
 {
 	int i;
 	t_list	*new_env;
-	char **env;
 	char **path;
-	char **tab;
 
-	tab = NULL;
 	path = init_path(path, start_env);
-	env = NULL;
 	i = 1;
 	new_env = lstdup(start_env);
-		while (command[i] != NULL && command[i][0] == '-'\
-			&& check_egal(command[i]) == 0)
-		{
-			if (ft_strcmp(command[i], "-i") == 0)
-			{
-				new_env = NULL;
-				i++;	
-			}
-			else if (ft_strcmp(command[i], "-u") == 0)
-			{
-				if (command[i + 1] == NULL)
-				{
-					ft_putendl("env: option requires an argument -- u");
-					return (1);
-				}
-				ft_unsetenv(command[i + 1], new_env);
-				i+= 2;
-			}
-			else if (ft_strcmp(command[i], "-P") == 0)
-			{
-				ft_putendl("change_PATH");
-				i++;
-				ft_putendl(command[i]);
-				i++;
-			}
-			else
-			{
-				ft_putendl("opt_illegal");
-				break ;
-			}
-		}
-		while (command[i] != NULL && check_egal(command[i]) == 1)
-		{
-			new_env = ft_setenv(command[i], new_env);
-			i++;
-		}
-		if (command[i] == NULL)
-			print_list(new_env);
-		else
-		{
-			env = lst_to_tab(new_env);
-			tab = split_after_env(command, i);
-			if (interpreteur(tab, &new_env) == 0)
-				sys_command(path, tab);
-		}
+	if (env_flags(&i, command, &new_env) == 1)
 		return (1);
-/*	else
-	{
-		while (command[i] != NULL)
-		{
-			if (check_egal(command[i]) == 1)
-				ft_setenv(command[i], start_env);
-			else
-			{
-				if (i != 0)
-				{
-					ft_putstr("env: ");
-					ft_putstr(command[i]);
-					ft_putendl(": No such file or directory");
-				}
-			}
-			i++;
-		}
-		return (1);	
-	}*/
-	return (0);
+	return (env_ar(command, new_env, &i, path));
 }
