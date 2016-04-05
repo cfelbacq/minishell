@@ -6,7 +6,7 @@
 #    By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/24 12:32:29 by cfelbacq          #+#    #+#              #
-#    Updated: 2016/03/29 13:23:10 by cfelbacq         ###   ########.fr        #
+#    Updated: 2016/04/05 17:05:36 by cfelbacq         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,5 +47,6 @@ clean :
 
 fclean : clean
 	rm -rf $(NAME)
+	make fclean -C libft
 
 re : fclean all
