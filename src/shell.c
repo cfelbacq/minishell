@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:57:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/04 12:50:55 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/05 14:52:13 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int		interpreteur(char **command, t_list **start_env)
 		return (env(command, *start_env));
 	if (ft_strcmp(command[0], "setenv") == 0)
 	{
-		*start_env = ft_setenv(command[1], *start_env);
+		pre_setenv(command, *start_env);
 		return (1);
 	}
 	if (ft_strcmp(command[0], "unsetenv") == 0)
@@ -49,8 +49,8 @@ void	sys_command(char **path, char **ar, char **env)
 	{
 		while (path[i] != NULL)
 		{
-				err = execve(ft_strjoin(path[i], ar[0]), ar, env);
-				i++;
+			err = execve(ft_strjoin(path[i], ar[0]), ar, env);
+			i++;
 		}
 		if (err == -1)
 		{
@@ -67,10 +67,10 @@ void	sys_command(char **path, char **ar, char **env)
 
 void	shell(void)
 {
-	char *line;
-	char **ar;
-	t_list *start_env;
-	char **path;
+	char	*line;
+	char	**ar;
+	t_list	*start_env;
+	char	**path;
 
 	ar = NULL;
 	line = NULL;

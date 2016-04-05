@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:49 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/04 12:48:43 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/05 14:23:52 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 
 extern char **environ;
 
+t_list	*pre_setenv(char **command, t_list *start_env);
 int		interpreteur(char **command, t_list **start_env);
 void	sys_command(char **path, char **ar, char **env);
 char	**lst_to_tab(t_list *start_env);
