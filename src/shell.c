@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:57:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/05 14:52:13 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/06 17:07:40 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int		interpreteur(char **command, t_list **start_env)
 		return (env(command, *start_env));
 	if (ft_strcmp(command[0], "setenv") == 0)
 	{
-		pre_setenv(command, *start_env);
+		pre_setenv(command, start_env);
 		return (1);
 	}
 	if (ft_strcmp(command[0], "unsetenv") == 0)
@@ -54,8 +54,11 @@ void	sys_command(char **path, char **ar, char **env)
 		}
 		if (err == -1)
 		{
-			ft_putstr("minishell: command not found: ");
-			ft_putendl(ar[0]);
+			if (execve(ar[0], ar, env) == -1)
+			{
+				ft_putstr("minishell: command not found: ");
+				ft_putendl(ar[0]);
+			}
 		}
 		exit(0);
 	}
@@ -63,6 +66,29 @@ void	sys_command(char **path, char **ar, char **env)
 		ft_putstr("fork_err");
 	else
 		wait(&i);
+}
+
+char	*epur_str(char *str)
+{
+	int i;
+	int j;
+	char *tmp;
+
+	tmp = (char *)ft_memalloc(sizeof(char) * ft_strlen(str));
+	j = 0;
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if (str[i] == ' ' || str[i] == '\t')
+		{
+			tmp[j++] = ' ';
+			while (str[i] == ' ' || str[i] == '\t')
+				i++;
+		}
+		tmp[j++] = str[i++];
+	}
+	tmp[j] = '\0';
+	return (tmp);
 }
 
 void	shell(void)
@@ -79,6 +105,8 @@ void	shell(void)
 	while (get_next_line(0, &line))
 	{
 		line = ft_strtrim(line);
+		line = epur_str(line);
+		ft_putendl(line);
 		ar = ft_strsplit(line, ' ');
 		if (*ar != NULL && interpreteur(ar, &start_env) == 0)
 		{

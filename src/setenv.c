@@ -6,25 +6,25 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 13:56:22 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/05 15:25:13 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/06 13:00:02 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_list	*pre_setenv(char **command, t_list *start_env)
+t_list	*pre_setenv(char **command, t_list **start_env)
 {
 	int i;
 
 	i = 1;
 	if (command[i] == NULL)
-		print_list(start_env);
+		print_list(*start_env);
 	else
 	{
 		while (command[i] != NULL)
 		{
 			if (check_egal(command[i]) == 1)
-				start_env = ft_setenv(command[i], start_env);
+				*start_env = ft_setenv(command[i], *start_env);
 			else
 			{
 				ft_putstr("setenv: ");
@@ -34,7 +34,7 @@ t_list	*pre_setenv(char **command, t_list *start_env)
 			i++;
 		}
 	}
-	return (start_env);
+	return (*start_env);
 }
 
 t_list	*ft_setenv(char *command, t_list *start_env)

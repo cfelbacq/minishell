@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 13:20:21 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/04 11:53:11 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/06 12:41:24 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ char	**init_path(char **path, t_list *env)
 	int i;
 
 	i = 0;
+	if (check_PATH(env) == 0)
+		return (NULL);
 	path = (ft_strsplit((get_value_env(env, "PATH", ft_strlen("PATH"))), ':'));
 	while (path[i] != NULL)
 	{
@@ -32,6 +34,11 @@ t_list	*init_env(char **env)
 	t_list	*tmp;
 	int		i;
 
+	if (*env == NULL)
+	{
+		start = NULL;
+		return (start);
+	}
 	i = 0;
 	start = ft_lstnew(env[i], ft_strlen(env[i]));
 	tmp = start;

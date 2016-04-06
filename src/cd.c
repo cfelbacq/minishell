@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 13:19:16 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/05 17:01:27 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/06 16:40:15 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,12 @@ t_list	*epur_list(t_list *start)
 		}
 		if (ft_strcmp(tmp->content, "..") == 0/* && ft_strcmp(previous->content, "/") != 0*/)
 		{
-			if (previous_previous != NULL)
+			if (ft_strcmp(previous->content, "/") == 0)
+			{
+				new->next = NULL;
+				return (new);
+			}
+			else if (previous_previous != NULL)
 			{
 				previous_previous->next = tmp->next;
 				free(previous->content);
@@ -104,11 +109,6 @@ t_list	*epur_list(t_list *start)
 				free(tmp->content);
 				free(tmp);
 				tmp = start;
-			}
-			else if (ft_strcmp(previous->content, "/") == 0)
-			{
-				new->next = NULL;
-				return (new);
 			}
 		}
 		if (ft_strcmp(tmp->content, "/") != 0)
@@ -133,34 +133,50 @@ char	*epur_path(char *path)
 	return (tmp);
 }
 
+int		cd_opt(int *i, int *p, char **ar)
+{
+	int j;
+
+	j = 0;
+	while (ar[*i] != NULL && ar[*i][0] == '-')
+	{
+		j = 0;
+		if (check_opt(ar[*i]) == 1)
+		{
+			while (ar[*i][j] != '\0')
+			{
+				if (j >= 1 && ar[*i][j] == 'P')
+					*p = 1;
+				else if (j >= 1 && ar[*i][j] == 'L')
+					*p = 0;
+				j++;
+			}
+		}
+		*i = *i + 1;
+	}
+	return (0);
+}
+
 void	change_directory(t_list *start_env, char **ar)
 {
 	char	*curpath;
 	int		i;
 	int		p;
-	int j;
+	char *tmp;
 
-	j = 0;
+	tmp = NULL;
 	curpath = NULL;
 	i = 1;
-	p = 0;
-	while (ar[i] != NULL && ar[i][0] == '-')
+	p = cd_opt(&i, &p, ar);
+	if (ft_strcmp(ar[i - 1], "-") == 0)
 	{
-		j = 0;
-		if (check_opt(ar[i]) == 1)
-		{
-			while (ar[i][j] != '\0')
-			{
-				if (j >= 1 && ar[i][j] == 'P')
-					p = 1;
-				else if (j >= 1 && ar[i][j] == 'L')
-					p = 0;
-				j++;
-			}
-		}
-		i++;
+		chdir(get_value_env(start_env, "OLDPWD", 6));
+		tmp = ft_strdup(get_value_env(start_env, "OLDPWD", 6));
+		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(start_env, "PWD", 3)), start_env);
+		ft_setenv(ft_strjoin("PWD=", tmp), start_env);
+		ft_putendl(tmp);
 	}
-	if (ar[i] == NULL)
+	else if (ar[i] == NULL)
 	{
 		if (check_HOME(start_env) == 1)
 		{
@@ -176,19 +192,26 @@ void	change_directory(t_list *start_env, char **ar)
 	else if (ar[i][0] == '/')
 	{
 		curpath = ft_strdup(ar[i]);
+		curpath = epur_path(curpath);
+		ft_putendl(curpath);
 		chdir(curpath);
 		ft_putstr(curpath);
 		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(start_env, "PWD", 3)), start_env);
 		curpath = ft_strjoin("PWD=", curpath);
 		ft_setenv(curpath, start_env);
 	}
-	else if (ar[i][0] == '.')
+	else if (ar[i][0] == '.' && ft_strncmp(ar[i], "...", 3) != 0)
 	{
 		curpath = ft_strjoin(ft_strjoin(get_value_env(start_env, "PWD", 3), "/"), ar[i]);
+		if (chdir(curpath) < 0)
+		{
+			ft_putendl("cd: No such file or directory");
+			return ;
+		}
 		curpath = epur_path(curpath);
 		ft_putstr("PWD : ");
 		ft_putendl(curpath);
-		chdir(curpath);
+		//chdir(curpath);
 		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(start_env, "PWD", 3)), start_env);
 		curpath = ft_strjoin("PWD=", curpath);
 		ft_setenv(curpath, start_env);
@@ -201,7 +224,11 @@ void	change_directory(t_list *start_env, char **ar)
 			ft_putendl("cd: permission denied");
 		else
 		{
-			chdir(ar[i]);
+			if (chdir(ar[i]) < 0)
+			{
+				ft_putendl("cd: not a directory");
+				return ;
+			}
 		ar[i] = ft_strjoin(ft_strjoin(get_value_env(start_env, "PWD", 3), "/"), ar[i]);
 			ft_setenv(ft_strjoin("OLDPWD=", get_value_env(start_env, "PWD", 3)), start_env);
 			ar[i] = ft_strjoin("PWD=", ar[i]);

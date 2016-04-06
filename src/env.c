@@ -6,12 +6,11 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:28 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/05 16:47:41 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/06 15:31:35 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-int		check_PATH(t_list *env);
 
 char	*get_value_env(t_list *start_env, char *to_find, int size_to_find)
 {
@@ -104,6 +103,7 @@ int	test_access(char *command, char **path)
 			return (err);
 		j++;
 	}
+	err = access((command), F_OK);
 	return (err);
 }
 
@@ -134,7 +134,7 @@ int		env_ar(char **command, t_list *new_env, int *i, char **path)
 		tab = split_after_env(command, *i);
 		if (interpreteur(tab, &new_env) == 0)//VOIR LES BUILTINS APRES ENV
 		{
-			if (check_PATH(new_env) == 1 && test_access(command[*i], path) == 0)
+			if (path != NULL && test_access(command[*i], path) == 0)
 				sys_command(path, tab, lst_to_tab(new_env));
 			else
 				print_env_err(command[*i]);
@@ -164,11 +164,10 @@ int		env(char **command, t_list *start_env)
 	char	**path;
 
 	new_env = NULL;
-	if (check_PATH(start_env) == 1)
-		path = init_path(path, start_env);
 	i = 1;
 	if (start_env != NULL)
 		new_env = lstdup(start_env);
+	path = init_path(path, start_env);
 	if (env_flags(&i, command, &new_env) == 1)
 		return (1);
 	return (env_ar(command, new_env, &i, path));

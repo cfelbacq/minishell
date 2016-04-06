@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/22 14:14:38 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/05 16:00:03 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/06 12:36:41 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 int	main(int argc, char **argv)
 {
-	if (*environ != NULL)
 		shell();
 	return (0);
 }
