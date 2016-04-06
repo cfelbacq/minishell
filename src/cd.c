@@ -12,14 +12,14 @@
 
 #include "minishell.h"
 
-int		check_HOME(t_list *env)
+int		check_env_name(t_list *env, char *name)
 {
 	t_list *tmp;
 
 	tmp = env;
 	while (tmp)
 	{
-		if (ft_strncmp(tmp->content, "HOME", 4) == 0)
+		if (ft_strncmp(tmp->content, name, ft_strlen(name)) == 0)
 			return (1);
 		tmp = tmp->next;
 	}
@@ -178,7 +178,7 @@ void	change_directory(t_list *start_env, char **ar)
 	}
 	else if (ar[i] == NULL)
 	{
-		if (check_HOME(start_env) == 1)
+		if (check_env_name(start_env, "HOME") == 1)
 		{
 			chdir(get_value_env(start_env, "HOME", 4));
 			ft_setenv(ft_strjoin("OLDPWD=", get_value_env(start_env, "PWD", 3)), start_env);

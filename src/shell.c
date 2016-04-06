@@ -11,6 +11,9 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 int		interpreteur(char **command, t_list **start_env)
 {
@@ -36,36 +39,49 @@ int		interpreteur(char **command, t_list **start_env)
 	return (0);
 }
 
+void	ex_without_path(char **ar, char **env)
+{
+	if (execve(ar[0], ar, env) == -1)
+	{
+		ft_putstr("minishell: command not found: ");
+		ft_putendl(ar[0]);
+	}
+}
+
 void	sys_command(char **path, char **ar, char **env)
 {
 	pid_t	pid;
 	int		i;
 	int		err;
+	struct sigaction sig;
 
+	/*sig.sa_flags = 0;
+	sig.sa_handler = SIG_IGN;
+	sigaction(SIGINT, &sig, NULL);*/
 	err = 0;
 	i = 0;
 	pid = fork();
 	if (pid == 0)
 	{
+	/*	sig.sa_handler = SIG_DFL;
+		sigaction(SIGINT, &sig, NULL);
+		ft_putstr("\n\n");*/
 		while (path[i] != NULL)
 		{
 			err = execve(ft_strjoin(path[i], ar[0]), ar, env);
 			i++;
 		}
 		if (err == -1)
-		{
-			if (execve(ar[0], ar, env) == -1)
-			{
-				ft_putstr("minishell: command not found: ");
-				ft_putendl(ar[0]);
-			}
-		}
+			ex_without_path(ar, env);
 		exit(0);
 	}
 	else if (pid < 0)
 		ft_putstr("fork_err");
 	else
-		wait(&i);
+	{
+		int status;
+		waitpid(pid, &status, 0);
+	}
 }
 
 char	*epur_str(char *str)
@@ -91,6 +107,31 @@ char	*epur_str(char *str)
 	return (tmp);
 }
 
+char	*last_word_after_c(char c, char *str)
+{
+	int i;
+
+	i = ft_strlen(str);
+	while (str[i] != c && i >= 0)
+		i--;
+	if (i>= 0)
+	{	
+		if (i == 0)
+			ft_putchar(str[i]);
+		while (str[i++] != '\0')
+				ft_putchar(str[i]);
+	}
+	return (NULL);
+}
+
+void	prompt(t_list *env)
+{
+		ft_putstr("$> ");
+	if (check_env_name(env, "PWD") == 1)
+		last_word_after_c('/', get_value_env(env, "PWD", 3));
+	ft_putstr(": ");
+}
+
 void	shell(void)
 {
 	char	*line;
@@ -101,18 +142,17 @@ void	shell(void)
 	ar = NULL;
 	line = NULL;
 	start_env = init_env(environ);
-	ft_putstr("$> ");
+	prompt(start_env);
 	while (get_next_line(0, &line))
 	{
 		line = ft_strtrim(line);
 		line = epur_str(line);
-		ft_putendl(line);
 		ar = ft_strsplit(line, ' ');
 		if (*ar != NULL && interpreteur(ar, &start_env) == 0)
 		{
 			path = init_path(path, start_env);
 			sys_command(path, ar, lst_to_tab(start_env));
 		}
-		ft_putstr("$> ");
+		prompt(start_env);
 	}
 }

@@ -20,7 +20,7 @@
 
 extern char **environ;
 
-int		check_PATH(t_list *env);
+int		check_env_name(t_list *env, char *name);
 t_list	*pre_setenv(char **command, t_list **start_env);
 int		interpreteur(char **command, t_list **start_env);
 void	sys_command(char **path, char **ar, char **env);

@@ -17,7 +17,7 @@ char	**init_path(char **path, t_list *env)
 	int i;
 
 	i = 0;
-	if (check_PATH(env) == 0)
+	if (check_env_name(env, "PATH") == 0)
 		return (NULL);
 	path = (ft_strsplit((get_value_env(env, "PATH", ft_strlen("PATH"))), ':'));
 	while (path[i] != NULL)
