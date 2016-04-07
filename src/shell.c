@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:57:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/06 17:07:40 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/07 14:46:42 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ void	sys_command(char **path, char **ar, char **env)
 	int		err;
 	struct sigaction sig;
 
-	/*sig.sa_flags = 0;
+	/*
+	sig.sa_flags = 0;
 	sig.sa_handler = SIG_IGN;
 	sigaction(SIGINT, &sig, NULL);*/
 	err = 0;
@@ -63,7 +64,8 @@ void	sys_command(char **path, char **ar, char **env)
 	pid = fork();
 	if (pid == 0)
 	{
-	/*	sig.sa_handler = SIG_DFL;
+		/*
+		sig.sa_handler = SIG_DFL;
 		sigaction(SIGINT, &sig, NULL);
 		ft_putstr("\n\n");*/
 		while (path[i] != NULL)

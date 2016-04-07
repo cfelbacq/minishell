@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 13:19:16 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/06 16:40:15 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/07 16:03:54 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,9 +96,16 @@ t_list	*epur_list(t_list *start)
 		}
 		if (ft_strcmp(tmp->content, "..") == 0/* && ft_strcmp(previous->content, "/") != 0*/)
 		{
-			if (ft_strcmp(previous->content, "/") == 0)
+			if (ft_strcmp(previous->content, "/") == 0)//&& (tmp->next == NULL || ft_strcmp("..", (tmp->next)->content) != 0))
 			{
-				new->next = NULL;
+				while (tmp != NULL && (ft_strcmp(tmp->content, "..") == 0 || ft_strcmp(tmp->content, ".") == 0))
+				{
+					ft_putendl(tmp->content);
+					previous->next = tmp->next;
+					previous_previous = tmp;
+					free(previous_previous);
+					tmp = tmp->next;
+				}
 				return (new);
 			}
 			else if (previous_previous != NULL)
@@ -203,6 +210,7 @@ void	change_directory(t_list *start_env, char **ar)
 	else if (ar[i][0] == '.' && ft_strncmp(ar[i], "...", 3) != 0)
 	{
 		curpath = ft_strjoin(ft_strjoin(get_value_env(start_env, "PWD", 3), "/"), ar[i]);
+		curpath = epur_path(curpath);
 		if (chdir(curpath) < 0)
 		{
 			ft_putendl("cd: No such file or directory");

@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:28 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/06 15:31:35 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/07 13:40:54 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,20 +141,6 @@ int		env_ar(char **command, t_list *new_env, int *i, char **path)
 		}
 	}
 	return (1);
-}
-
-int		check_PATH(t_list *env)
-{
-	t_list *tmp;
-
-	tmp = env;
-	while (tmp)
-	{
-		if (strncmp(tmp->content, "PATH", 4) == 0)
-			return (1);
-		tmp = tmp->next;
-	}
-	return (0);
 }
 
 int		env(char **command, t_list *start_env)
