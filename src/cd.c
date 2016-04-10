@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <dirent.h>
 
 int		check_env_name(t_list *env, char *name)
 {
@@ -158,10 +159,113 @@ int		cd_opt(int *i, int *p, char **ar)
 					*p = 0;
 				j++;
 			}
+			*i = *i + 1;
 		}
-		*i = *i + 1;
+		else
+		{
+			p = 0;
+			return (0);
+		}
 	}
 	return (0);
+}
+
+void	cd_dash(t_list *env)
+{
+	char *tmp;
+
+	tmp = NULL;
+	if (check_env_name(env, "OLDPWD") == 1)
+	{
+		tmp = ft_strdup(get_value_env(env, "OLDPWD", 6));
+		chdir(get_value_env(env, "OLDPWD", 6));
+		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
+		ft_setenv(ft_strjoin("PWD=", tmp), env);
+		ft_putendl(get_value_env(env, "PWD", 3));
+	}
+	else
+		ft_putendl("cd: OLDPWD not set");
+}
+
+void	cd_HOME(t_list *env)
+{
+			if (check_env_name(env, "HOME") == 1)
+		{
+			chdir(get_value_env(env, "HOME", 4));
+			ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
+			ft_setenv(ft_strjoin("PWD=", get_value_env(env, "HOME", 4)), env);
+			ft_putstr("PWD : ");
+			ft_putendl(get_value_env(env, "HOME", 4));
+		}
+		else
+			ft_putendl("cd: HOME not set");
+}
+
+char	*cd_slashe(char *ar, t_list *env)
+{
+	char *curpath;
+
+	curpath = ft_strdup(ar);
+	//curpath = epur_path(curpath);
+	ft_putendl(curpath);
+	if (access(curpath, F_OK) == -1)
+		ft_putendl("cd: No suck file or directory");
+	else if (opendir(curpath) == NULL)
+		ft_putendl("cd: Not a directory");
+	else if (access(curpath, R_OK) == -1)
+		ft_putendl("cd: Permission denied");
+	else
+	{
+		curpath = epur_path(curpath);
+		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
+		ft_setenv(ft_strjoin("PWD=", curpath), env);
+	}
+	return (curpath);
+}
+
+char	*cd_dot(t_list *env, char *ar)
+{
+	char *curpath;
+
+	curpath = NULL;
+	curpath = ft_strjoin(ft_strjoin(get_value_env(env, "PWD", 3), "/"), ar);
+	curpath = epur_path(curpath);
+	if (access(curpath, F_OK) == -1)
+		ft_putendl("cd: No suck file or directory");
+	else if (opendir(curpath) == NULL)
+		ft_putendl("cd: Not a directory");
+	else if (access(curpath, R_OK) == -1)
+		ft_putendl("cd: Permission denied");
+	else
+	{
+		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
+		ft_setenv(ft_strjoin("PWD=", curpath), env);
+	}
+	return (curpath);
+}
+
+char	*cd_dir(t_list *env, char *ar)
+{
+	char *curpath;
+
+	curpath = NULL;
+	if (ft_strcmp(get_value_env(env, "PWD", 3), "/") != 0)
+		curpath = ft_strdup("/");
+	curpath = ft_strjoin(ft_strjoin(get_value_env(env, "PWD", 3), curpath), ar);
+	curpath = epur_path(curpath);
+	ft_putendl(curpath);
+	if (access(curpath, F_OK) == -1)
+		ft_putendl("cd: No suck file or directory");
+	else if (opendir(curpath) == NULL)
+		ft_putendl("cd: Not a directory");
+	else if (access(curpath, R_OK) == -1)
+		ft_putendl("cd: Permission denied");
+	else
+	{
+		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
+		ft_setenv(ft_strjoin("PWD=", curpath), env);
+	}
+	return (curpath);
 }
 
 void	change_directory(t_list *start_env, char **ar)
@@ -169,79 +273,19 @@ void	change_directory(t_list *start_env, char **ar)
 	char	*curpath;
 	int		i;
 	int		p;
-	char *tmp;
 
-	tmp = NULL;
 	curpath = NULL;
 	i = 1;
 	p = cd_opt(&i, &p, ar);
 	if (ft_strcmp(ar[i - 1], "-") == 0)
-	{
-		chdir(get_value_env(start_env, "OLDPWD", 6));
-		tmp = ft_strdup(get_value_env(start_env, "OLDPWD", 6));
-		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(start_env, "PWD", 3)), start_env);
-		ft_setenv(ft_strjoin("PWD=", tmp), start_env);
-		ft_putendl(tmp);
-	}
+		cd_dash(start_env);
 	else if (ar[i] == NULL)
-	{
-		if (check_env_name(start_env, "HOME") == 1)
-		{
-			chdir(get_value_env(start_env, "HOME", 4));
-			ft_setenv(ft_strjoin("OLDPWD=", get_value_env(start_env, "PWD", 3)), start_env);
-			ft_setenv(ft_strjoin("PWD=", get_value_env(start_env, "HOME", 4)), start_env);
-			ft_putstr("PWD : ");
-			ft_putendl(get_value_env(start_env, "HOME", 4));
-		}
-		else
-			ft_putendl("cd: HOME not set");
-	}
+		cd_HOME(start_env);
 	else if (ar[i][0] == '/')
-	{
-		curpath = ft_strdup(ar[i]);
-		curpath = epur_path(curpath);
-		ft_putendl(curpath);
-		chdir(curpath);
-		ft_putstr(curpath);
-		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(start_env, "PWD", 3)), start_env);
-		curpath = ft_strjoin("PWD=", curpath);
-		ft_setenv(curpath, start_env);
-	}
-	else if (ar[i][0] == '.' && ft_strncmp(ar[i], "...", 3) != 0)
-	{
-		curpath = ft_strjoin(ft_strjoin(get_value_env(start_env, "PWD", 3), "/"), ar[i]);
-		curpath = epur_path(curpath);
-		if (chdir(curpath) < 0)
-		{
-			ft_putendl("cd: No such file or directory");
-			return ;
-		}
-		curpath = epur_path(curpath);
-		ft_putstr("PWD : ");
-		ft_putendl(curpath);
-		//chdir(curpath);
-		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(start_env, "PWD", 3)), start_env);
-		curpath = ft_strjoin("PWD=", curpath);
-		ft_setenv(curpath, start_env);
-	}
+		curpath = cd_slashe(ar[i], start_env);
+	else if (ar[i][0] == '.' || ft_strcmp(ar[i], "..") == 0)
+		curpath = cd_dot(start_env, ar[i]);
 	else
-	{
-		if (access(ar[i], F_OK) == -1)
-			ft_putendl("cd: No such file or directory");
-		else if (access(ar[i], R_OK) == -1)
-			ft_putendl("cd: permission denied");
-		else
-		{
-			if (chdir(ar[i]) < 0)
-			{
-				ft_putendl("cd: not a directory");
-				return ;
-			}
-		ar[i] = ft_strjoin(ft_strjoin(get_value_env(start_env, "PWD", 3), "/"), ar[i]);
-			ft_setenv(ft_strjoin("OLDPWD=", get_value_env(start_env, "PWD", 3)), start_env);
-			ar[i] = ft_strjoin("PWD=", ar[i]);
-			ft_putendl(ar[i]);
-			ft_setenv(ar[i], start_env);
-		}
-	}
+		curpath = cd_dir(start_env, ar[i]);
+	chdir(curpath);
 }

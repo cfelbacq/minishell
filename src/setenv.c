@@ -45,10 +45,7 @@ t_list	*ft_setenv(char *command, t_list *start_env)
 	t_list *previous;
 
 	if (start_env == NULL)
-	{
-		start_env = ft_lstnew(command, ft_strlen(command));
-		return (start_env);
-	}
+		return (start_env = ft_lstnew(command, ft_strlen(command)));
 	previous = NULL;
 	tmp1 = NULL;
 	tmp = start_env;
