@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 13:17:07 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/28 13:18:02 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/11 13:34:53 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int		len_of_double_tab(char **tab)
 	return (i);
 }
 
-int	check_egal(char *tmp)
+int		check_egal(char *tmp)
 {
 	int i;
 
@@ -60,7 +60,7 @@ int	check_egal(char *tmp)
 	return (0);
 }
 
-int	len_of_name(char *str)
+int		len_of_name(char *str)
 {
 	int i;
 

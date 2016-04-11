@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:28 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/07 13:40:54 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/11 13:36:54 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,20 +33,19 @@ char	*get_value_env(t_list *start_env, char *to_find, int size_to_find)
 	return (NULL);
 }
 
-
 char **split_after_env(char **tab, int i)
 {
-	int size;
-	int j;
-	char **tab2;
+	int		size;
+	int		j;
+	char	**tab2;
 
 	size = 0;
 	j = 0;
 	tab2 = NULL;
-	while(tab[i + size] != NULL)
+	while (tab[i + size] != NULL)
 		size++;
 	tab2 = (char **)ft_memalloc(sizeof(char *) * size + 1);
-	while(j < size)
+	while (j < size)
 	{
 		tab2[j] = strdup(tab[i + j]);
 		j++;
@@ -132,13 +131,10 @@ int		env_ar(char **command, t_list *new_env, int *i, char **path)
 	{
 		env = lst_to_tab(new_env);
 		tab = split_after_env(command, *i);
-		if (interpreteur(tab, &new_env) == 0)//VOIR LES BUILTINS APRES ENV
-		{
-			if (path != NULL && test_access(command[*i], path) == 0)
-				sys_command(path, tab, lst_to_tab(new_env));
-			else
-				print_env_err(command[*i]);
-		}
+		if (path != NULL && test_access(command[*i], path) == 0)
+			sys_command(path, tab, lst_to_tab(new_env));
+		else
+			print_env_err(command[*i]);
 	}
 	return (1);
 }

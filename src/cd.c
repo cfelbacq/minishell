@@ -6,12 +6,17 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 13:19:16 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/07 16:03:54 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/11 15:56:37 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include <dirent.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+void	check_curpath(char *curpath, t_list *env);
 
 int		check_env_name(t_list *env, char *name)
 {
@@ -56,7 +61,27 @@ int		len_of_word_l(t_list *start)
 	return (len);
 }
 
-char	*ins_slashes(t_list *start)
+char	*r_link(char *path, char *str_to_check)
+{
+	struct stat buf;
+	char *link_name;
+	int r;
+
+	r = 0;
+	link_name = NULL;
+	lstat(ft_strjoin(path, str_to_check), &buf);
+	if ((buf.st_mode & S_IFMT)  == S_IFLNK)
+	{
+		link_name = (char *)ft_memalloc(sizeof(char) * buf.st_size + 1);
+		r = readlink(ft_strjoin(path, str_to_check), link_name, buf.st_size);
+		link_name[r] = '\0';
+		free(str_to_check);
+		return (link_name);
+	}
+	return (str_to_check);
+}
+
+char	*ins_slashes(t_list *start, int p)
 {
 	t_list *tmp;
 	char *path;
@@ -68,6 +93,8 @@ char	*ins_slashes(t_list *start)
 		path = ft_strcat(path, tmp->content);
 		if (ft_strcmp(path, "/") != 0 && tmp->next != NULL)
 			path = ft_strcat(path, "/");
+		if (tmp->next != NULL && p == 1)
+			(tmp->next)->content = r_link(path, (tmp->next)->content);
 		tmp = tmp->next;
 	}
 	return (path);
@@ -127,21 +154,21 @@ t_list	*epur_list(t_list *start)
 	return (start);
 }
 
-char	*epur_path(char *path)
+char	*epur_path(char *path, int p)
 {
-	char *tmp;
-	char **tmp2;
-	t_list *path_to_epur;
+	char	*tmp;
+	char	**tmp2;
+	t_list	*path_to_epur;
 
 	tmp = NULL;
 	tmp2 = ft_strsplit(path, '/');
 	path_to_epur = init_env(tmp2);
 	path_to_epur = epur_list(path_to_epur);
-	tmp = ins_slashes(path_to_epur);
+	tmp = ins_slashes(path_to_epur, p);
 	return (tmp);
 }
 
-int		cd_opt(int *i, int *p, char **ar)
+void	cd_opt(int *i, int *p, char **ar)
 {
 	int j;
 
@@ -164,10 +191,10 @@ int		cd_opt(int *i, int *p, char **ar)
 		else
 		{
 			p = 0;
-			return (0);
+			return ;
 		}
 	}
-	return (0);
+	return ;
 }
 
 void	cd_dash(t_list *env)
@@ -187,85 +214,182 @@ void	cd_dash(t_list *env)
 		ft_putendl("cd: OLDPWD not set");
 }
 
-void	cd_HOME(t_list *env)
+void	cd_home(t_list *env)
 {
-			if (check_env_name(env, "HOME") == 1)
-		{
-			chdir(get_value_env(env, "HOME", 4));
-			ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
-			ft_setenv(ft_strjoin("PWD=", get_value_env(env, "HOME", 4)), env);
-			ft_putstr("PWD : ");
-			ft_putendl(get_value_env(env, "HOME", 4));
-		}
-		else
-			ft_putendl("cd: HOME not set");
+	if (check_env_name(env, "HOME") == 1)
+	{
+		chdir(get_value_env(env, "HOME", 4));
+		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
+		ft_setenv(ft_strjoin("PWD=", get_value_env(env, "HOME", 4)), env);
+		ft_putstr("PWD : ");
+		ft_putendl(get_value_env(env, "HOME", 4));
+	}
+	else
+		ft_putendl("cd: HOME not set");
 }
 
-char	*cd_slashe(char *ar, t_list *env)
+int		check_is_directory(char *curpath)
+{
+	struct stat buf;
+
+	lstat(curpath, &buf);
+	if ((buf.st_mode & S_IFMT) == S_IFDIR \
+			|| ((buf.st_mode & S_IFMT) == S_IFLNK && opendir(curpath) != NULL))
+		return (0);
+	else
+		return (-1);
+}
+
+char	*cd_slashe(char *ar, t_list *env, int p)
 {
 	char *curpath;
 
 	curpath = ft_strdup(ar);
-	//curpath = epur_path(curpath);
 	ft_putendl(curpath);
 	if (access(curpath, F_OK) == -1)
-		ft_putendl("cd: No suck file or directory");
-	else if (opendir(curpath) == NULL)
-		ft_putendl("cd: Not a directory");
+	{
+		ft_putstr("cd: No suck file or directory: ");
+		ft_putendl(ar);
+	}
+	else if (check_is_directory(curpath) == -1)
+	{
+		ft_putstr("cd: Not a directory: ");
+		ft_putendl(ar);
+	}
 	else if (access(curpath, R_OK) == -1)
-		ft_putendl("cd: Permission denied");
+	{
+		ft_putstr("cd: Permission denied: ");
+		ft_putendl(ar);
+	}
 	else
 	{
-		curpath = epur_path(curpath);
+		curpath = epur_path(curpath, p);
+		ft_putstr("PATH EPUR : ");
+		ft_putendl(curpath);
 		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
 		ft_setenv(ft_strjoin("PWD=", curpath), env);
 	}
 	return (curpath);
 }
 
-char	*cd_dot(t_list *env, char *ar)
+char	*cd_dot(t_list *env, char *ar, int p)
 {
 	char *curpath;
 
 	curpath = NULL;
 	curpath = ft_strjoin(ft_strjoin(get_value_env(env, "PWD", 3), "/"), ar);
-	curpath = epur_path(curpath);
+	ft_putendl(curpath);
 	if (access(curpath, F_OK) == -1)
-		ft_putendl("cd: No suck file or directory");
-	else if (opendir(curpath) == NULL)
-		ft_putendl("cd: Not a directory");
+	{
+		ft_putstr("cd: No suck file or directory: ");
+		ft_putendl(ar);
+	}
+	else if (check_is_directory(curpath) == -1)
+	{
+		ft_putstr("cd: Not a directory: ");
+		ft_putendl(ar);
+	}
 	else if (access(curpath, R_OK) == -1)
-		ft_putendl("cd: Permission denied");
+	{
+		ft_putstr("cd: Permission denied: ");
+		ft_putendl(ar);
+	}
 	else
 	{
+		curpath = epur_path(curpath, p);
+		ft_putstr("PATH EPUR : ");
+		ft_putendl(curpath);
 		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
 		ft_setenv(ft_strjoin("PWD=", curpath), env);
 	}
 	return (curpath);
 }
 
-char	*cd_dir(t_list *env, char *ar)
+char	*cd_dir(t_list *env, char *ar, int p)
 {
 	char *curpath;
 
-	curpath = NULL;
-	if (ft_strcmp(get_value_env(env, "PWD", 3), "/") != 0)
-		curpath = ft_strdup("/");
-	curpath = ft_strjoin(ft_strjoin(get_value_env(env, "PWD", 3), curpath), ar);
-	curpath = epur_path(curpath);
+	curpath = ft_strdup(get_value_env(env, "PWD", 3));
+	curpath = ft_strjoin(curpath, "/");
+	curpath = ft_strjoin(curpath, ar);
 	ft_putendl(curpath);
 	if (access(curpath, F_OK) == -1)
-		ft_putendl("cd: No suck file or directory");
-	else if (opendir(curpath) == NULL)
-		ft_putendl("cd: Not a directory");
+	{
+		ft_putstr("cd: No suck file or directory: ");
+		ft_putendl(ar);
+	}
+	else if (check_is_directory(curpath) == -1)
+	{
+		ft_putstr("cd: Not a directory: ");
+		ft_putendl(ar);
+	}
 	else if (access(curpath, R_OK) == -1)
-		ft_putendl("cd: Permission denied");
+	{
+		ft_putstr("cd: Permission denied: ");
+		ft_putendl(ar);
+	}
+	else
+	{
+		curpath = epur_path(curpath, p);
+		ft_putstr("PATH EPUR : ");
+		ft_putendl(curpath);
+		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
+		ft_setenv(ft_strjoin("PWD=", curpath), env);
+	}
+	return (curpath);
+}
+
+char	*cd_double_ar(char **ar, t_list *env, int p)
+{
+	char **tmp;
+	t_list *tmp2;
+
+	tmp2 = NULL;
+	tmp = ft_strsplit(get_value_env(env, "PWD", 3), '/');
+	int i;
+	
+	i = 0;
+	while (tmp[i] != NULL)
+	{
+		if (ft_strcmp(tmp[i], ar[1]) == 0)
+		{
+			free(tmp[i]);
+			tmp[i] = ft_strdup(ar[2]);
+			tmp2 = init_env(tmp);
+			tmp2 = epur_list(tmp2);
+			print_list(tmp2);
+			check_curpath(ins_slashes(tmp2, p), env);
+			return (ins_slashes(tmp2, p));
+		}
+		i++;
+	}
+	ft_putstr("cd: string not in pwd: ");
+	ft_putendl(ar[1]);
+	return (NULL);
+}
+
+void	check_curpath(char *curpath, t_list *env)
+{
+	if (access(curpath, F_OK) == -1)
+	{
+		ft_putstr("cd: No suck file or directory: ");
+		ft_putendl(curpath);
+	}
+	else if (check_is_directory(curpath) == -1)
+	{
+		ft_putstr("cd: Not a directory: ");
+		ft_putendl(curpath);
+	}
+	else if (access(curpath, R_OK) == -1)
+	{
+		ft_putstr("cd: Permission denied: ");
+		ft_putendl(curpath);
+	}
 	else
 	{
 		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
 		ft_setenv(ft_strjoin("PWD=", curpath), env);
 	}
-	return (curpath);
 }
 
 void	change_directory(t_list *start_env, char **ar)
@@ -276,16 +400,24 @@ void	change_directory(t_list *start_env, char **ar)
 
 	curpath = NULL;
 	i = 1;
-	p = cd_opt(&i, &p, ar);
-	if (ft_strcmp(ar[i - 1], "-") == 0)
+	p = 0;
+	cd_opt(&i, &p, ar);
+	if (len_of_double_tab(ar) - i > 2)
+		ft_putendl("cd: too many arguments");
+	else if (len_of_double_tab(ar) - i == 2)
+		curpath = cd_double_ar(ar, start_env, p);
+	else if (ft_strcmp(ar[i - 1], "-") == 0)
 		cd_dash(start_env);
 	else if (ar[i] == NULL)
-		cd_HOME(start_env);
+		cd_home(start_env);
 	else if (ar[i][0] == '/')
-		curpath = cd_slashe(ar[i], start_env);
+		curpath = cd_slashe(ar[i], start_env, p);
 	else if (ar[i][0] == '.' || ft_strcmp(ar[i], "..") == 0)
-		curpath = cd_dot(start_env, ar[i]);
+		curpath = cd_dot(start_env, ar[i], p);
 	else
-		curpath = cd_dir(start_env, ar[i]);
+		curpath = cd_dir(start_env, ar[i], p);
+	ft_putstr("CD : ");
+	if (curpath != NULL)
+		ft_putendl(curpath);
 	chdir(curpath);
 }

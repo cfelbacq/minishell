@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:57:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/07 14:46:42 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/11 13:32:59 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+
+static	void	exit_arg(void)
+{
+	ft_putendl_fd("exit: too many arguments", 2);
+	exit(0);
+}
 
 int		interpreteur(char **command, t_list **start_env)
 {
@@ -35,7 +41,10 @@ int		interpreteur(char **command, t_list **start_env)
 		return (1);
 	}
 	if (ft_strcmp(command[0], "exit") == 0)
-		exit(0);
+	{
+		//TOO MANY ARGUMENTS exit_arg();
+		exit(ft_atoi(command[1]));
+	}
 	return (0);
 }
 

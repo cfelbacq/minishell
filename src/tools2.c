@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/04 12:23:34 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/04 12:23:37 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/11 13:35:16 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,10 @@ t_list	*lstdup(t_list *to_copy)
 
 char	**lst_to_tab(t_list *start_env)
 {
-	int len;
-	t_list *tmp;
-	char **tab;
-	int i;
+	int		len;
+	t_list	*tmp;
+	char	**tab;
+	int		i;
 
 	i = 0;
 	tab = NULL;

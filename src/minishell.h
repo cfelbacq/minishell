@@ -6,17 +6,17 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:49 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/06 13:00:15 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/11 13:34:05 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include <unistd.h>
-#include <stdlib.h>
-#include "../libft/libft.h"
-#include "../libft/get_next_line.h"
+# include <unistd.h>
+# include <stdlib.h>
+# include "../libft/libft.h"
+# include "../libft/get_next_line.h"
 
 extern char **environ;
 
