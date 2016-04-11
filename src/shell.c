@@ -46,21 +46,13 @@ void	sys_command(char **path, char **ar, char **env)
 	pid_t	pid;
 	int		i;
 	int		err;
-	struct sigaction sig;
 
-	/*
-	sig.sa_flags = 0;
-	sig.sa_handler = SIG_IGN;
-	sigaction(SIGINT, &sig, NULL);*/
 	err = 0;
 	i = 0;
 	pid = fork();
 	if (pid == 0)
 	{
-		/*
-		sig.sa_handler = SIG_DFL;
-		sigaction(SIGINT, &sig, NULL);
-		ft_putstr("\n\n");*/
+		signal(SIGINT, SIG_DFL)
 		while (path[i] != NULL)
 		{
 			err = execve(ft_strjoin(path[i], ar[0]), ar, env);
@@ -74,6 +66,7 @@ void	sys_command(char **path, char **ar, char **env)
 		ft_putstr("fork_err");
 	else
 	{
+		signal(SIGINT, SIG_IGN);
 		int status;
 		waitpid(pid, &status, 0);
 	}

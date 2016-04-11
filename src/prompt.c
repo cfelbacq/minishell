@@ -31,8 +31,9 @@ static	char	*last_word_after_c(char c, char *str)
 
 void			prompt(t_list *env)
 {
+	//VOIR SETENV a l 'appel de env -i ./minishell
 	if (check_env_name(env, "PWD") == 0)
-		ft_setenv(ft_strjoin("PWD=", getcwd(NULL, 0)), env);
+		env = ft_setenv(ft_strjoin("PWD=", getcwd(NULL, 0)), env);
 	ft_putstr("$> ");
 	if (check_env_name(env, "PWD") == 1)
 		last_word_after_c('/', get_value_env(env, "PWD", 3));

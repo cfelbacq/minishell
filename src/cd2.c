@@ -38,7 +38,7 @@ char	*cd_slashe(char *ar, t_list *env, int p)
 		curpath = epur_path(curpath, p);
 		ft_putstr("PATH EPUR : ");
 		ft_putendl(curpath);
-		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
+		ft_setenv(ft_strjoin("OLDPWD=", getcwd(NULL, 0)), env);
 		ft_setenv(ft_strjoin("PWD=", curpath), env);
 	}
 	return (curpath);
@@ -50,7 +50,10 @@ char	*cd_dot(t_list *env, char *ar, int p)
 
 	ft_putchar('a');
 	curpath = NULL;
-	curpath = ft_strjoin(ft_strjoin(get_value_env(env, "PWD", 3), "/"), ar);
+	//curpath = ft_strjoin(ft_strjoin(get_value_env(env, "PWD", 3), "/"), ar);
+	curpath = ft_strjoin(ft_strjoin(getcwd(NULL, 0), "/"), ar);
+	ft_putstr(getcwd(NULL, 0));
+	ft_putchar('a');
 	ft_putendl(curpath);
 	if (access(curpath, F_OK) == -1)
 	{
@@ -72,7 +75,7 @@ char	*cd_dot(t_list *env, char *ar, int p)
 		curpath = epur_path(curpath, p);
 		ft_putstr("PATH EPUR : ");
 		ft_putendl(curpath);
-		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
+		ft_setenv(ft_strjoin("OLDPWD=", getcwd(NULL, 0)), env);
 		ft_setenv(ft_strjoin("PWD=", curpath), env);
 	}
 	return (curpath);
@@ -82,7 +85,7 @@ char	*cd_dir(t_list *env, char *ar, int p)
 {
 	char *curpath;
 
-	curpath = ft_strdup(get_value_env(env, "PWD", 3));
+	curpath = ft_strdup(getcwd(NULL, 0));
 	curpath = ft_strjoin(curpath, "/");
 	curpath = ft_strjoin(curpath, ar);
 	ft_putendl(curpath);
@@ -106,7 +109,7 @@ char	*cd_dir(t_list *env, char *ar, int p)
 		curpath = epur_path(curpath, p);
 		ft_putstr("PATH EPUR : ");
 		ft_putendl(curpath);
-		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
+		ft_setenv(ft_strjoin("OLDPWD=", getcwd(NULL, 0)), env);
 		ft_setenv(ft_strjoin("PWD=", curpath), env);
 	}
 	return (curpath);
@@ -118,7 +121,7 @@ char	*cd_double_ar(char **ar, t_list *env, int p)
 	t_list	*tmp2;
 	int		i;
 
-	tmp = ft_strsplit(get_value_env(env, "PWD", 3), '/');
+	tmp = ft_strsplit(getcwd(NULL, 0), '/');
 	tmp2 = init_env(tmp);
 	tmp2 = epur_list(tmp2);
 	tmp = lst_to_tab(tmp2);
