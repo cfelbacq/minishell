@@ -6,20 +6,11 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:57:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/11 13:32:59 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/11 19:31:01 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <signal.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-
-static	void	exit_arg(void)
-{
-	ft_putendl_fd("exit: too many arguments", 2);
-	exit(0);
-}
 
 int		interpreteur(char **command, t_list **start_env)
 {
@@ -42,19 +33,12 @@ int		interpreteur(char **command, t_list **start_env)
 	}
 	if (ft_strcmp(command[0], "exit") == 0)
 	{
-		//TOO MANY ARGUMENTS exit_arg();
-		exit(ft_atoi(command[1]));
+		if (command[1] != NULL)
+			exit(ft_atoi(command[1]));
+		else
+			exit(0);
 	}
 	return (0);
-}
-
-void	ex_without_path(char **ar, char **env)
-{
-	if (execve(ar[0], ar, env) == -1)
-	{
-		ft_putstr("minishell: command not found: ");
-		ft_putendl(ar[0]);
-	}
 }
 
 void	sys_command(char **path, char **ar, char **env)
@@ -97,9 +81,9 @@ void	sys_command(char **path, char **ar, char **env)
 
 char	*epur_str(char *str)
 {
-	int i;
-	int j;
-	char *tmp;
+	int		i;
+	int		j;
+	char	*tmp;
 
 	tmp = (char *)ft_memalloc(sizeof(char) * ft_strlen(str));
 	j = 0;
@@ -118,32 +102,7 @@ char	*epur_str(char *str)
 	return (tmp);
 }
 
-char	*last_word_after_c(char c, char *str)
-{
-	int i;
-
-	i = ft_strlen(str);
-	while (str[i] != c && i >= 0)
-		i--;
-	if (i>= 0)
-	{	
-		if (i == 0)
-			ft_putchar(str[i]);
-		while (str[i++] != '\0')
-				ft_putchar(str[i]);
-	}
-	return (NULL);
-}
-
-void	prompt(t_list *env)
-{
-		ft_putstr("$> ");
-	if (check_env_name(env, "PWD") == 1)
-		last_word_after_c('/', get_value_env(env, "PWD", 3));
-	ft_putstr(": ");
-}
-
-void	shell(void)
+void	shell(char **environ)
 {
 	char	*line;
 	char	**ar;

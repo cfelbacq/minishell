@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:49 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/11 13:34:05 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/11 18:55:38 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,27 @@
 # include <stdlib.h>
 # include "../libft/libft.h"
 # include "../libft/get_next_line.h"
+# include <dirent.h>
+# include <signal.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <sys/wait.h>
 
-extern char **environ;
-
+void	prompt(t_list *env);
+void	ex_without_path(char **ar, char **env);
+int		u_opt(void);
+void	print_env_err(char *str);
+char	*cd_slashe(char *ar, t_list *env, int p);
+char	*cd_dot(t_list *env, char *ar, int p);
+char	*cd_dir(t_list *env, char *ar, int p);
+char	*cd_double_ar(char **ar, t_list *env, int p);
+char	*ins_slashes(t_list *start, int p);
+char	*epur_path(char *path, int p);
+t_list	*epur_list(t_list *start);
+void	cd_opt(int *i, int *p, char **ar);
+int		check_opt(char *str);
+int		check_is_directory(char *curpath);
+void	check_curpath_dble_ar(char *curpath, t_list *env);
 int		check_env_name(t_list *env, char *name);
 t_list	*pre_setenv(char **command, t_list **start_env);
 int		interpreteur(char **command, t_list **start_env);
@@ -38,7 +56,7 @@ t_list	*init_env(char **env);
 char	**init_path(char **path, t_list *env);
 void	change_directory(t_list *start_env, char **ar);
 void	print_list(t_list *start);
-void	shell(void);
+void	shell(char **environ);
 char	*get_value_env(t_list *start_env, char *to_find, int size_to_find);
 
 #endif

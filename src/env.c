@@ -6,34 +6,13 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:28 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/11 13:36:54 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/11 18:43:22 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*get_value_env(t_list *start_env, char *to_find, int size_to_find)
-{
-	int		i;
-	char	*tmp;
-	t_list	*tmp_l;
-
-	tmp_l = start_env;
-	tmp = NULL;
-	i = 0;
-	while (tmp_l != NULL)
-	{
-		if (ft_strncmp(tmp_l->content, to_find, size_to_find) == 0)
-		{
-			tmp = ft_strchr(tmp_l->content, '=');
-			return (++tmp);
-		}
-		tmp_l = tmp_l->next;
-	}
-	return (NULL);
-}
-
-char **split_after_env(char **tab, int i)
+char	**split_after_env(char **tab, int i)
 {
 	int		size;
 	int		j;
@@ -52,12 +31,6 @@ char **split_after_env(char **tab, int i)
 	}
 	tab2[size] = NULL;
 	return (tab2);
-}
-
-static	int	u_opt(void)
-{
-	ft_putendl("env: option requires an argument -- u");
-	return (1);
 }
 
 int		env_flags(int *i, char **command, t_list **new_env)
@@ -88,7 +61,7 @@ int		env_flags(int *i, char **command, t_list **new_env)
 	return (0);
 }
 
-int	test_access(char *command, char **path)
+int		test_access(char *command, char **path)
 {
 	int j;
 	int err;
@@ -104,13 +77,6 @@ int	test_access(char *command, char **path)
 	}
 	err = access((command), F_OK);
 	return (err);
-}
-
-void	print_env_err(char *str)
-{
-	ft_putstr("env: ");
-	ft_putstr(str);
-	ft_putendl(": No such file or directory");
 }
 
 int		env_ar(char **command, t_list *new_env, int *i, char **path)
