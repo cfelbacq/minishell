@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/11 18:32:48 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/11 18:40:37 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/12 12:29:05 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,23 @@ void	print_env_err(char *str)
 	ft_putstr("env: ");
 	ft_putstr(str);
 	ft_putendl(": No such file or directory");
+}
+
+void	print_cd_err(int i, char *ar)
+{
+	if (i == 1)
+	{
+		ft_putstr_fd("cd: No such file or directory: ", 2);
+		ft_putendl_fd(ar, 2);
+	}
+	if (i == 2)
+	{
+		ft_putstr_fd("cd: Not a directory: ", 2);
+		ft_putendl_fd(ar, 2);
+	}
+	if (i == 3)
+	{
+		ft_putstr_fd("cd: Permission denied: ", 2);
+		ft_putendl_fd(ar, 2);
+	}
 }

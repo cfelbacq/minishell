@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/11 17:26:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/11 18:29:03 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/12 17:43:53 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ char	*ins_slashes(t_list *start, int p)
 		if (tmp->next != NULL && p == 1)
 			(tmp->next)->content = r_link(path, (tmp->next)->content);
 		tmp = tmp->next;
+		i++;
 	}
 	return (path);
 }
@@ -73,10 +74,15 @@ char	*epur_path(char *path, int p)
 	char	*tmp;
 	char	**tmp2;
 	t_list	*path_to_epur;
+	t_list	*new;
 
 	tmp = NULL;
 	tmp2 = ft_strsplit(path, '/');
-	path_to_epur = init_env(tmp2);
+	if (tmp2 != NULL)
+		path_to_epur = init_env(tmp2);
+	new = ft_lstnew("/", ft_strlen("/") + 1);
+	new->next = path_to_epur;
+	path_to_epur = new;
 	path_to_epur = epur_list(path_to_epur);
 	tmp = ins_slashes(path_to_epur, p);
 	return (tmp);

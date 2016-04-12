@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:28 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/11 18:43:22 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/12 17:56:07 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	**split_after_env(char **tab, int i)
 	tab2 = (char **)ft_memalloc(sizeof(char *) * size + 1);
 	while (j < size)
 	{
-		tab2[j] = strdup(tab[i + j]);
+		tab2[j] = ft_strdup(tab[i + j]);
 		j++;
 	}
 	tab2[size] = NULL;
@@ -54,8 +54,8 @@ int		env_flags(int *i, char **command, t_list **new_env)
 		}
 		else
 		{
-			ft_putendl("env: option illegal");
-			break ;
+			ft_putendl_fd("env: illegal option", 2);
+			return (1);
 		}
 	}
 	return (0);
@@ -81,10 +81,8 @@ int		test_access(char *command, char **path)
 
 int		env_ar(char **command, t_list *new_env, int *i, char **path)
 {
-	char **env;
 	char **tab;
 
-	env = NULL;
 	tab = NULL;
 	while (command[*i] != NULL && check_egal(command[*i]) == 1)
 	{
@@ -95,9 +93,10 @@ int		env_ar(char **command, t_list *new_env, int *i, char **path)
 		print_list(new_env);
 	else
 	{
-		env = lst_to_tab(new_env);
 		tab = split_after_env(command, *i);
-		if (path != NULL && test_access(command[*i], path) == 0)
+		if (ft_strcmp(command[*i], "env") == 0)
+			env(tab, new_env);
+		else if (path != NULL && test_access(command[*i], path) == 0)
 			sys_command(path, tab, lst_to_tab(new_env));
 		else
 			print_env_err(command[*i]);

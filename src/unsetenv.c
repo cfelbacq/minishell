@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/29 12:36:35 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/04 12:08:40 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/12 17:45:51 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static	int		check_unset_ar(char *command)
 {
 	if (command == NULL)
 	{
-		ft_putendl("unsetenv: not enough arguments");
+		ft_putendl_fd("unsetenv: not enough arguments", 2);
 		return (0);
 	}
 	return (1);
@@ -26,10 +26,10 @@ static	int		check_valid_unset(char *command)
 {
 	if (check_egal(command) == 1)
 	{
-		ft_putstr("env: ");
-		ft_putstr("unsetenv ");
-		ft_putstr(command);
-		ft_putendl(": Invalid argument");
+		ft_putstr_fd("env: ", 2);
+		ft_putstr_fd("unsetenv ", 2);
+		ft_putstr_fd(command, 2);
+		ft_putendl_fd(": Invalid argument", 2);
 		return (0);
 	}
 	return (1);

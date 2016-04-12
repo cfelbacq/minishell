@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:57:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/11 19:31:01 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/12 17:49:23 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	sys_command(char **path, char **ar, char **env)
 	pid = fork();
 	if (pid == 0)
 	{
-		signal(SIGINT, SIG_DFL)
+		signal(SIGINT, SIG_DFL);
 		while (path[i] != NULL)
 		{
 			err = execve(ft_strjoin(path[i], ar[0]), ar, env);
@@ -81,6 +81,11 @@ char	*epur_str(char *str)
 	tmp = (char *)ft_memalloc(sizeof(char) * ft_strlen(str));
 	j = 0;
 	i = 0;
+	if (str[0] == ' ' || str[0] == '\t')
+	{
+		while (str[i] == ' ' || str[i] == '\t')
+			i++;
+	}
 	while (str[i] != '\0')
 	{
 		if (str[i] == ' ' || str[i] == '\t')
@@ -89,7 +94,9 @@ char	*epur_str(char *str)
 			while (str[i] == ' ' || str[i] == '\t')
 				i++;
 		}
-		tmp[j++] = str[i++];
+		tmp[j] = str[i];
+		j++;
+		i++;
 	}
 	tmp[j] = '\0';
 	return (tmp);

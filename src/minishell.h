@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:49 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/11 18:55:38 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/12 12:25:45 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 
+void	print_cd_err(int i, char *ar);
 void	prompt(t_list *env);
 void	ex_without_path(char **ar, char **env);
 int		u_opt(void);

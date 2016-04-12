@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 13:56:22 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/11 13:36:00 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/12 17:31:56 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,22 @@ t_list	*pre_setenv(char **command, t_list **start_env)
 	return (*start_env);
 }
 
+t_list *add_end(t_list *new, t_list *start)
+{
+	t_list *tmp;
+
+	tmp = start;
+	if (start == NULL)
+	{
+		start = new;
+		return (start);
+	}
+	while (tmp)
+		tmp = tmp->next;
+	tmp->next = new;
+	return (start);
+}
+
 t_list	*ft_setenv(char *command, t_list *start_env)
 {
 	t_list	*tmp;
@@ -45,7 +61,7 @@ t_list	*ft_setenv(char *command, t_list *start_env)
 	t_list	*previous;
 
 	if (start_env == NULL)
-		return (start_env = ft_lstnew(command, ft_strlen(command)));
+		return (start_env = ft_lstnew(command, ft_strlen(command) + 1));
 	previous = NULL;
 	tmp1 = NULL;
 	tmp = start_env;
@@ -62,6 +78,6 @@ t_list	*ft_setenv(char *command, t_list *start_env)
 		tmp = tmp->next;
 	}
 	tmp1 = ft_strdup(command);
-	previous->next = ft_lstnew(tmp1, ft_strlen(tmp1) + 1);
+	previous->next = ft_lstnew(tmp1, ft_strlen(tmp1));
 	return (start_env);
 }

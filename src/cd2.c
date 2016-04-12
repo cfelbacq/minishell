@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/11 17:31:09 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/11 19:40:23 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/12 17:57:09 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,28 +17,17 @@ char	*cd_slashe(char *ar, t_list *env, int p)
 	char *curpath;
 
 	curpath = ft_strdup(ar);
-	ft_putendl(curpath);
+		curpath = epur_path(curpath, p);
 	if (access(curpath, F_OK) == -1)
-	{
-		ft_putstr("cd: No suck file or directory: ");
-		ft_putendl(ar);
-	}
+		print_cd_err(1, ar);
 	else if (check_is_directory(curpath) == -1)
-	{
-		ft_putstr("cd: Not a directory: ");
-		ft_putendl(ar);
-	}
-	else if (access(curpath, R_OK) == -1)
-	{
-		ft_putstr("cd: Permission denied: ");
-		ft_putendl(ar);
-	}
+		print_cd_err(2, ar);
+	else if (access(curpath, X_OK) == -1)
+		print_cd_err(3, ar);
 	else
 	{
-		curpath = epur_path(curpath, p);
-		ft_putstr("PATH EPUR : ");
-		ft_putendl(curpath);
-		ft_setenv(ft_strjoin("OLDPWD=", getcwd(NULL, 0)), env);
+	//	curpath = epur_path(curpath, p);
+		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
 		ft_setenv(ft_strjoin("PWD=", curpath), env);
 	}
 	return (curpath);
@@ -48,34 +37,19 @@ char	*cd_dot(t_list *env, char *ar, int p)
 {
 	char *curpath;
 
-	ft_putchar('a');
 	curpath = NULL;
-	//curpath = ft_strjoin(ft_strjoin(get_value_env(env, "PWD", 3), "/"), ar);
-	curpath = ft_strjoin(ft_strjoin(getcwd(NULL, 0), "/"), ar);
-	ft_putstr(getcwd(NULL, 0));
-	ft_putchar('a');
-	ft_putendl(curpath);
+	curpath = ft_strjoin(ft_strjoin(get_value_env(env, "PWD", 3), "/"), ar);
+	curpath = epur_path(curpath, p);
 	if (access(curpath, F_OK) == -1)
-	{
-		ft_putstr("cd: No suck file or directory: ");
-		ft_putendl(ar);
-	}
+		print_cd_err(1, ar);
 	else if (check_is_directory(curpath) == -1)
-	{
-		ft_putstr("cd: Not a directory: ");
-		ft_putendl(ar);
-	}
-	else if (access(curpath, R_OK) == -1)
-	{
-		ft_putstr("cd: Permission denied: ");
-		ft_putendl(ar);
-	}
+		print_cd_err(2, ar);
+	else if (access(curpath, X_OK) == -1)
+		print_cd_err(3, ar);
 	else
 	{
-		curpath = epur_path(curpath, p);
-		ft_putstr("PATH EPUR : ");
-		ft_putendl(curpath);
-		ft_setenv(ft_strjoin("OLDPWD=", getcwd(NULL, 0)), env);
+	//	curpath = epur_path(curpath, p);
+		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
 		ft_setenv(ft_strjoin("PWD=", curpath), env);
 	}
 	return (curpath);
@@ -88,28 +62,17 @@ char	*cd_dir(t_list *env, char *ar, int p)
 	curpath = ft_strdup(getcwd(NULL, 0));
 	curpath = ft_strjoin(curpath, "/");
 	curpath = ft_strjoin(curpath, ar);
-	ft_putendl(curpath);
+	curpath = epur_path(curpath, p);
 	if (access(curpath, F_OK) == -1)
-	{
-		ft_putstr("cd: No suck file or directory: ");
-		ft_putendl(ar);
-	}
+		print_cd_err(1, ar);
 	else if (check_is_directory(curpath) == -1)
-	{
-		ft_putstr("cd: Not a directory: ");
-		ft_putendl(ar);
-	}
-	else if (access(curpath, R_OK) == -1)
-	{
-		ft_putstr("cd: Permission denied: ");
-		ft_putendl(ar);
-	}
+		print_cd_err(2, ar);
+	else if (access(curpath, X_OK) == -1)
+		print_cd_err(3, ar);
 	else
 	{
-		curpath = epur_path(curpath, p);
-		ft_putstr("PATH EPUR : ");
-		ft_putendl(curpath);
-		ft_setenv(ft_strjoin("OLDPWD=", getcwd(NULL, 0)), env);
+	//	curpath = epur_path(curpath, p);
+		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
 		ft_setenv(ft_strjoin("PWD=", curpath), env);
 	}
 	return (curpath);
@@ -139,7 +102,7 @@ char	*cd_double_ar(char **ar, t_list *env, int p)
 		}
 		i++;
 	}
-	ft_putstr("cd: string not in pwd: ");
-	ft_putendl(ar[1]);
+	ft_putstr_fd("cd: string not in pwd: ", 2);
+	ft_putendl_fd(ar[1], 2);
 	return (NULL);
 }

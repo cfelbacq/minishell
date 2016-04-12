@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 13:19:16 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/11 19:37:44 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/12 14:03:18 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static	void	cd_dash(t_list *env)
 		ft_putendl(get_value_env(env, "PWD", 3));
 	}
 	else
-		ft_putendl("cd: OLDPWD not set");
+		ft_putendl_fd("cd: OLDPWD not set", 2);
 }
 
 static	void	cd_home(t_list *env)
@@ -36,11 +36,9 @@ static	void	cd_home(t_list *env)
 		chdir(get_value_env(env, "HOME", 4));
 		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
 		ft_setenv(ft_strjoin("PWD=", get_value_env(env, "HOME", 4)), env);
-		ft_putstr("PWD : ");
-		ft_putendl(get_value_env(env, "HOME", 4));
 	}
 	else
-		ft_putendl("cd: HOME not set");
+		ft_putendl_fd("cd: HOME not set", 2);
 }
 
 void			change_directory(t_list *start_env, char **ar)
@@ -53,9 +51,9 @@ void			change_directory(t_list *start_env, char **ar)
 	i = 1;
 	p = 0;
 	cd_opt(&i, &p, ar);
-	ft_setenv(ft_strjoin("PWD=", getcwd(NULL, 0)), start_env);
+	//ft_setenv(ft_strjoin("PWD=", getcwd(NULL, 0)), start_env);
 	if (len_of_double_tab(ar) - i > 2)
-		ft_putendl("cd: too many arguments");
+		ft_putendl_fd("cd: too many arguments", 2);
 	else if (len_of_double_tab(ar) - i == 2)
 		curpath = cd_double_ar(ar, start_env, p);
 	else if (ft_strcmp(ar[i - 1], "-") == 0)
