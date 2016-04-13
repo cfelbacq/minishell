@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:57:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/12 17:49:23 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/13 15:49:16 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,11 +81,6 @@ char	*epur_str(char *str)
 	tmp = (char *)ft_memalloc(sizeof(char) * ft_strlen(str));
 	j = 0;
 	i = 0;
-	if (str[0] == ' ' || str[0] == '\t')
-	{
-		while (str[i] == ' ' || str[i] == '\t')
-			i++;
-	}
 	while (str[i] != '\0')
 	{
 		if (str[i] == ' ' || str[i] == '\t')
@@ -102,6 +97,24 @@ char	*epur_str(char *str)
 	return (tmp);
 }
 
+char **check_tild(char **ar, t_list *start_env)
+{
+	int i;
+
+	i = 0;
+	while (ar[i] != NULL)
+	{
+		if (ft_strcmp(ar[i], "~") == 0)
+		{
+			ft_strdel(&ar[i]);
+			if (check_env_name(start_env, "HOME"))
+				ar[i] = ft_strdup(get_value_env(start_env, "HOME", 4));
+		}
+		i++;
+	}
+	return (ar);
+}
+
 void	shell(char **environ)
 {
 	char	*line;
@@ -116,8 +129,9 @@ void	shell(char **environ)
 	while (get_next_line(0, &line))
 	{
 		line = ft_strtrim(line);
-		line = epur_str(line);
+		//line = epur_str(line);
 		ar = ft_strsplit(line, ' ');
+		ar = check_tild(ar, start_env);
 		if (*ar != NULL && interpreteur(ar, &start_env) == 0)
 		{
 			path = init_path(path, start_env);
