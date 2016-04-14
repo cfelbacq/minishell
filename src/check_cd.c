@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/11 17:18:38 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/11 17:25:48 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/14 12:26:39 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ void	check_curpath_dble_ar(char *curpath, t_list *env)
 		ft_putstr("cd: Not a directory: ");
 		ft_putendl(curpath);
 	}
-	else if (access(curpath, R_OK) == -1)
+	else if (access(curpath, X_OK) == -1)
 	{
 		ft_putstr("cd: Permission denied: ");
 		ft_putendl(curpath);

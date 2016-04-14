@@ -6,11 +6,21 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 13:56:22 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/12 17:31:56 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/14 17:45:37 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int		char_bef_egal(char *str)
+{
+	int i;
+
+	i = 0;
+	if (str[i] == '=')
+		return (0);
+	return (1);
+}
 
 t_list	*pre_setenv(char **command, t_list **start_env)
 {
@@ -23,7 +33,7 @@ t_list	*pre_setenv(char **command, t_list **start_env)
 	{
 		while (command[i] != NULL)
 		{
-			if (check_egal(command[i]) == 1)
+			if (check_egal(command[i]) == 1 && char_bef_egal(command[i]) == 1)
 				*start_env = ft_setenv(command[i], *start_env);
 			else
 			{

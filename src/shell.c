@@ -6,13 +6,13 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:57:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/13 15:49:16 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/14 19:58:27 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		interpreteur(char **command, t_list **start_env)
+int		interpreteur(char **command, t_list **start_env, char **path)
 {
 	if (ft_strcmp(command[0], "cd") == 0)
 	{
@@ -20,23 +20,73 @@ int		interpreteur(char **command, t_list **start_env)
 		return (1);
 	}
 	if (ft_strcmp(command[0], "env") == 0)
-		return (env(command, *start_env));
+		return (env(command, *start_env, path));
 	if (ft_strcmp(command[0], "setenv") == 0)
 	{
 		pre_setenv(command, start_env);
 		return (1);
 	}
+	if (ft_strcmp(command[0], "./minishell") == 0)
+		ft_setenv(ft_strjoin("SHLVL=", (ft_itoa(ft_atoi(get_value_env(*start_env, "SHLVL", 5)) + 1))), *start_env);
 	if (ft_strcmp(command[0], "unsetenv") == 0)
 	{
-		ft_unsetenv(command[1], *start_env);
+		pre_unsetenv(command, start_env);
 		return (1);
 	}
 	if (ft_strcmp(command[0], "exit") == 0)
 	{
 		if (command[1] != NULL)
+		{
+			free_lst(*start_env);
 			exit(ft_atoi(command[1]));
+		}
 		else
+		{
+			free_lst(*start_env);
 			exit(0);
+		}
+	}
+	return (0);
+}
+
+int		check_slashe(char *ar)
+{
+	int i;
+
+	i = 0;
+	while (ar[i] != '\0')
+	{
+		if (ar[i] == '/')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+int		test_path(char **path, char *ar)
+{
+	int i;
+	char *tmp;
+
+	tmp = NULL;
+	i = 0;
+	while (path[i] != NULL)
+	{
+		if (check_slashe(ar) == 0)
+			tmp = ft_strjoin(path[i], ar);
+		else
+			tmp = ft_strdup(ar);
+		if (access(tmp, F_OK) == 0 && access(tmp, X_OK) == -1)
+		{
+			ft_putstr("minishell: permission denied: ");
+			if (check_slashe(ar) == 0)
+				ft_putendl(ar);
+			else
+				ft_putendl(tmp);
+			free(tmp);
+			return (1);
+		}
+		i++;
 	}
 	return (0);
 }
@@ -46,7 +96,9 @@ void	sys_command(char **path, char **ar, char **env)
 	pid_t	pid;
 	int		i;
 	int		err;
+	char *tmp;
 
+	tmp = NULL;
 	err = 0;
 	i = 0;
 	pid = fork();
@@ -59,17 +111,17 @@ void	sys_command(char **path, char **ar, char **env)
 			i++;
 		}
 		if (err == -1)
-			ex_without_path(ar, env);
+		{
+			if (test_path(path, ar[0]) == 0)
+				ex_without_path(ar, env);
+		}
+		free_double_tab(path);
 		exit(0);
 	}
 	else if (pid < 0)
 		ft_putstr("fork_err");
 	else
-	{
-		signal(SIGINT, SIG_IGN);
-		int status;
-		waitpid(pid, &status, 0);
-	}
+		waitpid(pid, &i, 0);
 }
 
 char	*epur_str(char *str)
@@ -125,18 +177,19 @@ void	shell(char **environ)
 	ar = NULL;
 	line = NULL;
 	start_env = init_env(environ);
-	prompt(start_env);
+	start_env = prompt(start_env);
+	path = init_path(path, start_env);
+	signal(SIGINT, SIG_IGN);
 	while (get_next_line(0, &line))
 	{
 		line = ft_strtrim(line);
 		//line = epur_str(line);
 		ar = ft_strsplit(line, ' ');
+		free(line);
 		ar = check_tild(ar, start_env);
-		if (*ar != NULL && interpreteur(ar, &start_env) == 0)
-		{
-			path = init_path(path, start_env);
+		if (*ar != NULL && interpreteur(ar, &start_env, path) == 0)
 			sys_command(path, ar, lst_to_tab(start_env));
-		}
+		free_double_tab(ar);
 		prompt(start_env);
 	}
 }

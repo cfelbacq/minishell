@@ -6,14 +6,13 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/11 17:31:09 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/13 16:59:06 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/14 19:12:54 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 char	*epur_slashe(char *tmp);
-int		check_tmp(char *tmp, char p);
 
 char	*cd_slashe(char *ar, t_list *env, int p)
 {
@@ -63,7 +62,7 @@ char	*epur_slashe(char *tmp)
 	return (new);
 }
 
-int		check_tmp(char *tmp, char p)
+int		check_tmp(char *tmp, int p)
 {
 	char **tmp_double;
 	char *new;
@@ -72,11 +71,11 @@ int		check_tmp(char *tmp, char p)
 	 i = 0;
 	ft_putendl(tmp);
 	tmp_double = ft_strsplit(tmp, '/');
-	new = (char *)ft_memalloc(sizeof(char) * ft_strlen(tmp));
+	new = (char *)ft_memalloc(sizeof(char) * ft_strlen(tmp) + 1);
 	while (tmp_double[i] != NULL)
 	{
 		if (ft_strcmp(new, "/") != 0)
-			new = ft_strcat(new, "/");
+			new = ft_strjoin(new, "/");
 		new = ft_strjoin(new, tmp_double[i]);
 		ft_putstr("NEW :");
 		ft_putendl(new);
@@ -150,6 +149,7 @@ char	*cd_double_ar(char **ar, t_list *env, int p)
 		new = ft_strcat(new, ar[2]);
 		new = ft_strcat(new, ft_strstr(pwd, ar[1]) + ft_strlen(ar[1]));
 		check_curpath_dble_ar(new , env);
+		new = epur_path(new, p);
 		return (new);
 	}
 	ft_putstr_fd("cd: string not in pwd: ", 2);

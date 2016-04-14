@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/11 18:34:54 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/11 19:37:45 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/14 14:54:32 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static	char	*last_word_after_c(char c, char *str)
 	return (NULL);
 }
 
-void			prompt(t_list *env)
+t_list			*prompt(t_list *env)
 {
 	//VOIR SETENV a l 'appel de env -i ./minishell
 	if (check_env_name(env, "PWD") == 0)
@@ -38,4 +38,5 @@ void			prompt(t_list *env)
 	if (check_env_name(env, "PWD") == 1)
 		last_word_after_c('/', get_value_env(env, "PWD", 3));
 	ft_putstr(": ");
+	return (env);
 }

@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:28 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/12 17:56:07 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/14 19:22:18 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int		env_flags(int *i, char **command, t_list **new_env)
 		{
 			if (command[*i + 1] == NULL)
 				return (u_opt());
-			if (ft_unsetenv(command[*i + 1], *new_env) == NULL)
+			if ((*new_env = ft_unsetenv(command[*i + 1], *new_env, 1)) == NULL)
 				return (1);
 			*i = *i + 2;
 		}
@@ -95,7 +95,7 @@ int		env_ar(char **command, t_list *new_env, int *i, char **path)
 	{
 		tab = split_after_env(command, *i);
 		if (ft_strcmp(command[*i], "env") == 0)
-			env(tab, new_env);
+			env(tab, new_env, path);
 		else if (path != NULL && test_access(command[*i], path) == 0)
 			sys_command(path, tab, lst_to_tab(new_env));
 		else
@@ -104,17 +104,15 @@ int		env_ar(char **command, t_list *new_env, int *i, char **path)
 	return (1);
 }
 
-int		env(char **command, t_list *start_env)
+int		env(char **command, t_list *start_env, char **path)
 {
 	int		i;
 	t_list	*new_env;
-	char	**path;
 
 	new_env = NULL;
 	i = 1;
 	if (start_env != NULL)
 		new_env = lstdup(start_env);
-	path = init_path(path, start_env);
 	if (env_flags(&i, command, &new_env) == 1)
 		return (1);
 	return (env_ar(command, new_env, &i, path));

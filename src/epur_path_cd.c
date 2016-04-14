@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/11 17:26:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/13 13:19:38 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/14 15:59:19 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,11 +79,15 @@ char	*epur_path(char *path, int p)
 	tmp = NULL;
 	tmp2 = ft_strsplit(path, '/');
 	if (tmp2 != NULL)
+	{
 		path_to_epur = init_env(tmp2);
+		free_double_tab(tmp2);
+	}
 	new = ft_lstnew("/", ft_strlen("/") + 1);
 	new->next = path_to_epur;
 	path_to_epur = new;
 	path_to_epur = epur_list(path_to_epur);
 	tmp = ins_slashes(path_to_epur, p);
+	free_lst(path_to_epur);
 	return (tmp);
 }
