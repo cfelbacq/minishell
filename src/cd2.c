@@ -6,12 +6,11 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/11 17:31:09 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/15 16:05:57 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/15 16:35:07 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-char	*ft_stradd(char *to_free, char *to_add);
 
 char	*cd_slashe(char *ar, t_list *env, int p)
 {
@@ -27,7 +26,7 @@ char	*cd_slashe(char *ar, t_list *env, int p)
 	if (check_tmp(epur_slashe(tmp), p, ar) != -1)
 	{
 		curpath = epur_path(curpath, p);
-		oldpwd = ft_strjoin("OLDPWD=", get_value_env(env , "PWD", 3));
+		oldpwd = ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3));
 		pwd = ft_strjoin("PWD=", curpath);
 		ft_setenv(oldpwd, env);
 		ft_setenv(pwd, env);
@@ -37,9 +36,9 @@ char	*cd_slashe(char *ar, t_list *env, int p)
 
 char	*epur_slashe(char *tmp)
 {
-	char *new;
-	int i;
-	int j;
+	char	*new;
+	int		i;
+	int		j;
 
 	j = 0;
 	new = (char *)ft_memalloc(sizeof(char) * ft_strlen(tmp) + 1);
@@ -63,40 +62,40 @@ char	*epur_slashe(char *tmp)
 
 int	error_check_tmp(char *tmp, char *new, char **doubletab, char *ar)
 {
-		if (access(new, F_OK) == -1)
-		{
-			print_cd_err(1, ar);
-			free(tmp);
-			free(new);
-			free_double_tab(doubletab);
-			return (-1);
-		}
-		else if (check_is_directory(new) == -1)
-		{
-			print_cd_err(2, ar);
-			free(tmp);
-			free(new);
-			free_double_tab(doubletab);
-			return (-1);
-		}
-		else if (access(new, X_OK) == -1)
-		{
-			print_cd_err(3, ar);
-			free(tmp);
-			free(new);
-			free_double_tab(doubletab);
-			return (-1);
-		}
-		return (0);
+	if (access(new, F_OK) == -1)
+	{
+		print_cd_err(1, ar);
+		free(tmp);
+		free(new);
+		free_double_tab(doubletab);
+		return (-1);
+	}
+	else if (check_is_directory(new) == -1)
+	{
+		print_cd_err(2, ar);
+		free(tmp);
+		free(new);
+		free_double_tab(doubletab);
+		return (-1);
+	}
+	else if (access(new, X_OK) == -1)
+	{
+		print_cd_err(3, ar);
+		free(tmp);
+		free(new);
+		free_double_tab(doubletab);
+		return (-1);
+	}
+	return (0);
 }
 
 int		check_tmp(char *tmp, int p, char *ar)
 {
-	char **tmp_double;
-	char *new;
-	int i;
+	char	**tmp_double;
+	char	*new;
+	int		i;
 
-	 i = 0;
+	i = 0;
 	ft_putendl(tmp);
 	tmp_double = ft_strsplit(tmp, '/');
 	new = (char *)ft_memalloc(sizeof(char) * ft_strlen(tmp) + 1);

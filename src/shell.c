@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:57:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/15 13:19:06 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/15 17:43:33 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,27 @@
 
 int		ft_exit(char **command, t_list *start_env, char **path)
 {
-		if (command[1] != NULL && command[2] == NULL)
-		{
-			free_lst(start_env);
-			free_double_tab(path);
-			exit(ft_atoi(command[1]));
-		}
-		else if (command[1] == NULL)
-		{
-			free_lst(start_env);
-			free_double_tab(path);
-			exit(0);
-		}
-		else if (command[2] != NULL)
-		{
-			ft_putendl("exit: too many arguments");
-		}
-		return (1);
+	int i;
+
+	i = 0;
+	if (command[1] != NULL && command[2] == NULL)
+	{
+		free_lst(start_env);
+		free_double_tab(path);
+		i = ft_atoi(command[1]);
+		free_double_tab(command);
+		exit(i);
+	}
+	else if (command[1] == NULL)
+	{
+		free_lst(start_env);
+		free_double_tab(path);
+		free_double_tab(command);
+		exit(0);
+	}
+	else if (command[2] != NULL)
+		ft_putendl("exit: too many arguments");
+	return (1);
 }
 
 int		interpreteur(char **command, t_list **start_env, char **path)
@@ -47,7 +51,7 @@ int		interpreteur(char **command, t_list **start_env, char **path)
 		pre_setenv(command, start_env);
 		return (1);
 	}
-/*	if (ft_strcmp(command[0], "./minishell") == 0)
+	/*	if (ft_strcmp(command[0], "./minishell") == 0)
 		ft_setenv(ft_strjoin("SHLVL=", (ft_itoa(ft_atoi(get_value_env(*start_env, "SHLVL", 5)) + 1))), *start_env);*/ //VOIR BONUS (NE PEUT ETRE QUE UN NOMBRE)
 	if (ft_strcmp(command[0], "unsetenv") == 0)
 	{
@@ -75,8 +79,8 @@ int		check_slashe(char *ar)
 
 int		test_path(char **path, char *ar)
 {
-	int i;
-	char *tmp;
+	int		i;
+	char	*tmp;
 
 	tmp = NULL;
 	i = 0;
@@ -103,9 +107,9 @@ int		test_path(char **path, char *ar)
 
 void	child_process(char **path, char **ar, char **env)
 {
-	int i;
-	int err;
-	char *tmp;
+	int		i;
+	int		err;
+	char	*tmp;
 
 	tmp = NULL;
 	err = 0;
@@ -130,7 +134,7 @@ void	child_process(char **path, char **ar, char **env)
 void	sys_command(char **path, char **ar, char **env)
 {
 	pid_t	pid;
-	int i;
+	int		i;
 
 	i = 0;
 	pid = fork();
@@ -167,7 +171,7 @@ char	*epur_str(char *str)
 	return (tmp);
 }
 
-char **check_tild(char **ar, t_list *start_env)
+char	**check_tild(char **ar, t_list *start_env)
 {
 	int i;
 
@@ -177,7 +181,7 @@ char **check_tild(char **ar, t_list *start_env)
 		if (ft_strcmp(ar[i], "~") == 0)
 		{
 			ft_strdel(&ar[i]);
-			if (check_env_name(start_env, "HOME"))
+			if (check_env_name(start_env, "HOME") == 1)
 				ar[i] = ft_strdup(get_value_env(start_env, "HOME", 4));
 		}
 		i++;
@@ -191,6 +195,7 @@ void	shell(char **environ)
 	char	**ar;
 	t_list	*start_env;
 	char	**path;
+	char	*tmp;
 
 	ar = NULL;
 	line = NULL;
@@ -200,7 +205,9 @@ void	shell(char **environ)
 	signal(SIGINT, SIG_IGN);
 	while (get_next_line(0, &line))
 	{
+		tmp = line;
 		line = ft_strtrim(line);
+		free(tmp);
 		//line = epur_str(line);
 		ar = ft_strsplit(line, ' ');
 		free(line);

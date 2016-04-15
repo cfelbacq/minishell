@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 13:19:16 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/15 15:14:00 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/15 16:53:53 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,6 @@ void			change_directory(t_list *start_env, char **ar)
 	i = 1;
 	p = 0;
 	cd_opt(&i, &p, ar);
-	//ft_setenv(ft_strjoin("PWD=", getcwd(NULL, 0)), start_env);
 	if (len_of_double_tab(ar) - i > 2)
 		ft_putendl_fd("cd: too many arguments", 2);
 	else if (len_of_double_tab(ar) - i == 2)
@@ -95,8 +94,6 @@ void			change_directory(t_list *start_env, char **ar)
 		curpath = cd_dot(start_env, ar[i], p);
 	else
 		curpath = cd_dir(start_env, ar[i], p);
-	if (curpath != NULL)
-		ft_putendl(curpath);
 	chdir(curpath);
 	free(curpath);
 }

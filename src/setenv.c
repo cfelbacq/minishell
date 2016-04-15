@@ -6,13 +6,13 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 13:56:22 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/15 15:11:55 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/15 17:02:31 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		char_bef_egal(char *str)
+int			char_bef_egal(char *str)
 {
 	int i;
 
@@ -22,7 +22,7 @@ int		char_bef_egal(char *str)
 	return (1);
 }
 
-t_list	*pre_setenv(char **command, t_list **start_env)
+t_list		*pre_setenv(char **command, t_list **start_env)
 {
 	int i;
 
@@ -48,7 +48,7 @@ t_list	*pre_setenv(char **command, t_list **start_env)
 	return (*start_env);
 }
 
-t_list *add_end(t_list *new, t_list *start)
+t_list		*add_end(t_list *new, t_list *start)
 {
 	t_list *tmp;
 
@@ -64,7 +64,7 @@ t_list *add_end(t_list *new, t_list *start)
 	return (start);
 }
 
-t_list	*ft_setenv(char *command, t_list *start_env)
+t_list		*ft_setenv(char *command, t_list *start_env)
 {
 	t_list	*tmp;
 	char	*tmp1;
@@ -74,7 +74,6 @@ t_list	*ft_setenv(char *command, t_list *start_env)
 	if (start_env == NULL)
 		return (start_env = ft_lstnew(command, ft_strlen(command) + 1));
 	previous = NULL;
-	tmp1 = NULL;
 	tmp = start_env;
 	while (tmp != NULL)
 	{
@@ -82,13 +81,14 @@ t_list	*ft_setenv(char *command, t_list *start_env)
 		{
 			free(tmp->content);
 			tmp->content = ft_strdup(command);
-			tmp->content_size = ft_strlen(command) * sizeof(char) + 1;
+			tmp->content_size = (ft_strlen(command) * sizeof(char) + 1);
 			return (start_env);
 		}
 		previous = tmp;
 		tmp = tmp->next;
 	}
 	tmp1 = ft_strdup(command);
-	previous->next = ft_lstnew(tmp1, ft_strlen(tmp1));
+	previous->next = ft_lstnew(tmp1, sizeof(char) * ft_strlen(tmp1) + 1);
+	free(tmp1);
 	return (start_env);
 }

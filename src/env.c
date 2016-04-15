@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:28 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/14 19:22:18 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/15 17:15:09 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,17 @@ int		env_flags(int *i, char **command, t_list **new_env)
 		if (ft_strcmp(command[*i], "-i") == 0 \
 				|| ft_strcmp(command[*i], "-") == 0)
 		{
+			free_lst(*new_env);
 			*new_env = NULL;
 			*i = *i + 1;
 		}
 		else if (ft_strcmp(command[*i], "-u") == 0)
 		{
 			if (command[*i + 1] == NULL)
+			{
+				free_lst(*new_env);
 				return (u_opt());
+			}
 			if ((*new_env = ft_unsetenv(command[*i + 1], *new_env, 1)) == NULL)
 				return (1);
 			*i = *i + 2;
@@ -63,14 +67,18 @@ int		env_flags(int *i, char **command, t_list **new_env)
 
 int		test_access(char *command, char **path)
 {
-	int j;
-	int err;
+	int		j;
+	int		err;
+	char	*tmp;
 
+	tmp = NULL;
 	err = -1;
 	j = 0;
 	while (path[j] != NULL)
 	{
-		err = access(ft_strjoin(path[j], command), F_OK);
+		tmp = ft_strjoin(path[j], command);
+		err = access(tmp, F_OK);
+		free(tmp);
 		if (err == 0)
 			return (err);
 		j++;
@@ -82,7 +90,7 @@ int		test_access(char *command, char **path)
 int		env_ar(char **command, t_list *new_env, int *i, char **path)
 {
 	char **tab;
-
+	
 	tab = NULL;
 	while (command[*i] != NULL && check_egal(command[*i]) == 1)
 	{
@@ -101,6 +109,7 @@ int		env_ar(char **command, t_list *new_env, int *i, char **path)
 		else
 			print_env_err(command[*i]);
 	}
+	free_lst(new_env);
 	return (1);
 }
 

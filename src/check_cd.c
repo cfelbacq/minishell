@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/11 17:18:38 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/14 12:26:39 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/15 16:29:17 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,28 +79,4 @@ int		check_is_directory(char *curpath)
 		return (0);
 	else
 		return (-1);
-}
-
-void	check_curpath_dble_ar(char *curpath, t_list *env)
-{
-	if (access(curpath, F_OK) == -1)
-	{
-		ft_putstr("cd: No suck file or directory: ");
-		ft_putendl(curpath);
-	}
-	else if (check_is_directory(curpath) == -1)
-	{
-		ft_putstr("cd: Not a directory: ");
-		ft_putendl(curpath);
-	}
-	else if (access(curpath, X_OK) == -1)
-	{
-		ft_putstr("cd: Permission denied: ");
-		ft_putendl(curpath);
-	}
-	else
-	{
-		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
-		ft_setenv(ft_strjoin("PWD=", curpath), env);
-	}
 }

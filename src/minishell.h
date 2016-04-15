@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:49 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/15 13:58:50 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/15 16:29:14 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 
+char	*ft_stradd(char *to_free, char *to_add);
 void	pre_unsetenv(char **command, t_list **start_env);
 char	*epur_slashe(char *tmp);
 int		check_tmp(char *tmp, int p, char *ar);
@@ -41,7 +42,6 @@ t_list	*epur_list(t_list *start);
 void	cd_opt(int *i, int *p, char **ar);
 int		check_opt(char *str);
 int		check_is_directory(char *curpath);
-void	check_curpath_dble_ar(char *curpath, t_list *env);
 int		check_env_name(t_list *env, char *name);
 t_list	*pre_setenv(char **command, t_list **start_env);
 int		interpreteur(char **command, t_list **start_env, char **path);
