@@ -6,11 +6,32 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:57:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/14 19:58:27 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/15 13:19:06 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int		ft_exit(char **command, t_list *start_env, char **path)
+{
+		if (command[1] != NULL && command[2] == NULL)
+		{
+			free_lst(start_env);
+			free_double_tab(path);
+			exit(ft_atoi(command[1]));
+		}
+		else if (command[1] == NULL)
+		{
+			free_lst(start_env);
+			free_double_tab(path);
+			exit(0);
+		}
+		else if (command[2] != NULL)
+		{
+			ft_putendl("exit: too many arguments");
+		}
+		return (1);
+}
 
 int		interpreteur(char **command, t_list **start_env, char **path)
 {
@@ -26,26 +47,15 @@ int		interpreteur(char **command, t_list **start_env, char **path)
 		pre_setenv(command, start_env);
 		return (1);
 	}
-	if (ft_strcmp(command[0], "./minishell") == 0)
-		ft_setenv(ft_strjoin("SHLVL=", (ft_itoa(ft_atoi(get_value_env(*start_env, "SHLVL", 5)) + 1))), *start_env);
+/*	if (ft_strcmp(command[0], "./minishell") == 0)
+		ft_setenv(ft_strjoin("SHLVL=", (ft_itoa(ft_atoi(get_value_env(*start_env, "SHLVL", 5)) + 1))), *start_env);*/ //VOIR BONUS (NE PEUT ETRE QUE UN NOMBRE)
 	if (ft_strcmp(command[0], "unsetenv") == 0)
 	{
 		pre_unsetenv(command, start_env);
 		return (1);
 	}
 	if (ft_strcmp(command[0], "exit") == 0)
-	{
-		if (command[1] != NULL)
-		{
-			free_lst(*start_env);
-			exit(ft_atoi(command[1]));
-		}
-		else
-		{
-			free_lst(*start_env);
-			exit(0);
-		}
-	}
+		return (ft_exit(command, *start_env, path));
 	return (0);
 }
 
@@ -91,33 +101,41 @@ int		test_path(char **path, char *ar)
 	return (0);
 }
 
-void	sys_command(char **path, char **ar, char **env)
+void	child_process(char **path, char **ar, char **env)
 {
-	pid_t	pid;
-	int		i;
-	int		err;
+	int i;
+	int err;
 	char *tmp;
 
 	tmp = NULL;
 	err = 0;
 	i = 0;
+	signal(SIGINT, SIG_DFL);
+	while (path[i] != NULL)
+	{
+		tmp = ft_strjoin(path[i], ar[0]);
+		err = execve(tmp, ar, env);
+		free(tmp);
+		i++;
+	}
+	if (err == -1)
+	{
+		if (test_path(path, ar[0]) == 0)
+			ex_without_path(ar, env);
+	}
+	free_double_tab(path);
+	exit(0);
+}
+
+void	sys_command(char **path, char **ar, char **env)
+{
+	pid_t	pid;
+	int i;
+
+	i = 0;
 	pid = fork();
 	if (pid == 0)
-	{
-		signal(SIGINT, SIG_DFL);
-		while (path[i] != NULL)
-		{
-			err = execve(ft_strjoin(path[i], ar[0]), ar, env);
-			i++;
-		}
-		if (err == -1)
-		{
-			if (test_path(path, ar[0]) == 0)
-				ex_without_path(ar, env);
-		}
-		free_double_tab(path);
-		exit(0);
-	}
+		child_process(path, ar, env);
 	else if (pid < 0)
 		ft_putstr("fork_err");
 	else

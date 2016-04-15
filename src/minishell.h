@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:49 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/14 19:24:58 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/15 13:58:50 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 
 void	pre_unsetenv(char **command, t_list **start_env);
 char	*epur_slashe(char *tmp);
-int		check_tmp(char *tmp, int p);
+int		check_tmp(char *tmp, int p, char *ar);
 void	print_cd_err(int i, char *ar);
 t_list	*prompt(t_list *env);
 void	ex_without_path(char **ar, char **env);
@@ -34,7 +34,7 @@ void	print_env_err(char *str);
 char	*cd_slashe(char *ar, t_list *env, int p);
 char	*cd_dot(t_list *env, char *ar, int p);
 char	*cd_dir(t_list *env, char *ar, int p);
-char	*cd_double_ar(char **ar, t_list *env, int p);
+char	*cd_double_ar(char **ar, t_list *env, int p, int i);
 char	*ins_slashes(t_list *start, int p);
 char	*epur_path(char *path, int p);
 t_list	*epur_list(t_list *start);

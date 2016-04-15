@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/11 18:32:48 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/14 13:20:00 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/15 15:21:03 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ void	ex_without_path(char **ar, char **env)
 int		u_opt(void)
 {
 	ft_putendl("env: option requires an argument -- u");
+	ft_putendl("usage: env [-i] [-u name] [name=value ...]\
+ [utility [argument ...]]");
 	return (1);
 }
 

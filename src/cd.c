@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 13:19:16 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/14 15:59:21 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/15 15:14:00 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,27 @@
 static	void	cd_dash(t_list *env, int p)
 {
 	char *tmp;
+	char *oldpwd;
+	char *pwd;
 
-	tmp = NULL;
 	if (check_env_name(env, "OLDPWD") == 1)
 	{
 		tmp = ft_strdup(get_value_env(env, "OLDPWD", 6));
-		if (check_tmp(epur_slashe(tmp), p) == -1)
-		{
-			print_cd_err(1, tmp);
+		tmp = epur_slashe(tmp);
+		if (check_tmp(tmp, p, tmp) == -1)
 			return ;
+		if (ft_strlen(tmp) != 0)
+		{
+			tmp = epur_path(tmp, p);
+			chdir(tmp);
+			oldpwd = ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3));
+			pwd = ft_strjoin("PWD=", tmp);
+			ft_setenv(oldpwd, env);
+			ft_setenv(pwd, env);
+			ft_putendl(get_value_env(env, "PWD", 3));
+			free(pwd);
+			free(oldpwd);
 		}
-		chdir(get_value_env(env, "OLDPWD", 6));
-		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
-		ft_setenv(ft_strjoin("PWD=", tmp), env);
-		ft_putendl(get_value_env(env, "PWD", 3));
 	}
 	else
 		ft_putendl_fd("cd: OLDPWD not set", 2);
@@ -37,20 +44,27 @@ static	void	cd_dash(t_list *env, int p)
 static	void	cd_home(t_list *env, int p)
 {
 	char *home;
+	char *oldpwd;
+	char *pwd;
 
-	home = NULL;
 	if (check_env_name(env, "HOME") == 1)
 	{
-		home = get_value_env(env, "HOME", 4);
-		if (check_tmp(epur_slashe(home), p) == -1)
-		{
-			print_cd_err(1, home);
+		home = ft_strdup(get_value_env(env, "HOME", 4));
+		home = epur_slashe(home);
+		if (check_tmp(home, p, home) == -1)
 			return ;
+		if (ft_strlen(home) != 0)
+		{
+			home = epur_path(home, p);
+			chdir(home);
+			oldpwd = ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3));
+			pwd = ft_strjoin("PWD=", home);
+			ft_setenv(oldpwd, env);
+			ft_setenv(pwd, env);
+			free(oldpwd);
+			free(pwd);
+			free(home);
 		}
-		chdir(home);
-		ft_setenv(ft_strjoin("OLDPWD=", get_value_env(env, "PWD", 3)), env);
-		if (home != NULL)
-			ft_setenv(ft_strjoin("PWD=", home), env);
 	}
 	else
 		ft_putendl_fd("cd: HOME not set", 2);
@@ -70,7 +84,7 @@ void			change_directory(t_list *start_env, char **ar)
 	if (len_of_double_tab(ar) - i > 2)
 		ft_putendl_fd("cd: too many arguments", 2);
 	else if (len_of_double_tab(ar) - i == 2)
-		curpath = cd_double_ar(ar, start_env, p);
+		curpath = cd_double_ar(ar, start_env, p, i);
 	else if (ft_strcmp(ar[i - 1], "-") == 0)
 		cd_dash(start_env, p);
 	else if (ar[i] == NULL)
@@ -84,4 +98,5 @@ void			change_directory(t_list *start_env, char **ar)
 	if (curpath != NULL)
 		ft_putendl(curpath);
 	chdir(curpath);
+	free(curpath);
 }

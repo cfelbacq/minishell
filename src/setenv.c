@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 13:56:22 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/14 17:45:37 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/15 15:11:55 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ t_list	*pre_setenv(char **command, t_list **start_env)
 				ft_putstr("setenv: ");
 				ft_putstr(command[i]);
 				ft_putendl(": Invalid argument");
+				return (*start_env);
 			}
 			i++;
 		}

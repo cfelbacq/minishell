@@ -6,7 +6,7 @@
 #    By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/24 12:32:29 by cfelbacq          #+#    #+#              #
-#    Updated: 2016/04/11 18:37:43 by cfelbacq         ###   ########.fr        #
+#    Updated: 2016/04/14 15:27:19 by cfelbacq         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,8 @@ SRC = src/main.c \
 	  src/epur_list_cd.c \
 	  src/init.c \
 	  src/setenv.c \
-	  src/unsetenv.c
+	  src/unsetenv.c \
+	  src/free.c
 
 OBJ = main.o \
 	  env.o \
@@ -42,7 +43,8 @@ OBJ = main.o \
 	  epur_list_cd.o \
 	  init.o \
 	  setenv.o \
-	  unsetenv.o
+	  unsetenv.o \
+	  free.o
 
 libft = libft/libft.a
 
