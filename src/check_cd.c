@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/11 17:18:38 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/15 16:29:17 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/16 17:37:31 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,20 +41,6 @@ void	cd_opt(int *i, int *p, char **ar)
 	return ;
 }
 
-int		check_env_name(t_list *env, char *name)
-{
-	t_list *tmp;
-
-	tmp = env;
-	while (tmp)
-	{
-		if (ft_strncmp(tmp->content, name, ft_strlen(name)) == 0)
-			return (1);
-		tmp = tmp->next;
-	}
-	return (0);
-}
-
 int		check_opt(char *str)
 {
 	int i;
@@ -79,4 +65,60 @@ int		check_is_directory(char *curpath)
 		return (0);
 	else
 		return (-1);
+}
+
+int	error_check_tmp(char *tmp, char *new, char **doubletab, char *ar)
+{
+	if (access(new, F_OK) == -1)
+	{
+		print_cd_err(1, ar);
+		free(tmp);
+		free(new);
+		free_double_tab(doubletab);
+		return (-1);
+	}
+	else if (check_is_directory(new) == -1)
+	{
+		print_cd_err(2, ar);
+		free(tmp);
+		free(new);
+		free_double_tab(doubletab);
+		return (-1);
+	}
+	else if (access(new, X_OK) == -1)
+	{
+		print_cd_err(3, ar);
+		free(tmp);
+		free(new);
+		free_double_tab(doubletab);
+		return (-1);
+	}
+	return (0);
+}
+
+int		check_tmp(char *tmp, int p, char *ar)
+{
+	char	**tmp_double;
+	char	*new;
+	int		i;
+
+	i = 0;
+//	ft_putendl(tmp);
+	tmp_double = ft_strsplit(tmp, '/');
+	new = (char *)ft_memalloc(sizeof(char) * ft_strlen(tmp) + 1);
+	while (tmp_double[i] != NULL)
+	{
+		if (ft_strcmp(new, "/") != 0)
+			new = ft_stradd(new, "/");
+		new = ft_stradd(new, tmp_double[i]);
+	//	ft_putstr("NEW :");
+	//	ft_putendl(new);
+		if (error_check_tmp(tmp, new, tmp_double, ar) == -1)
+			return (-1);
+		new = epur_path(new, p);
+		i++;
+	}
+	free_double_tab(tmp_double);
+	free(new);
+	return (0);
 }

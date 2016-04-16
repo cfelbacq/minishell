@@ -6,13 +6,13 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:57:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/15 17:43:33 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/16 18:38:10 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		ft_exit(char **command, t_list *start_env, char **path)
+int		ft_exit(char **command, t_list *start_env, char **path, char *pwd)
 {
 	int i;
 
@@ -23,6 +23,7 @@ int		ft_exit(char **command, t_list *start_env, char **path)
 		free_double_tab(path);
 		i = ft_atoi(command[1]);
 		free_double_tab(command);
+		free(pwd);
 		exit(i);
 	}
 	else if (command[1] == NULL)
@@ -30,6 +31,7 @@ int		ft_exit(char **command, t_list *start_env, char **path)
 		free_lst(start_env);
 		free_double_tab(path);
 		free_double_tab(command);
+		free(pwd);
 		exit(0);
 	}
 	else if (command[2] != NULL)
@@ -37,11 +39,13 @@ int		ft_exit(char **command, t_list *start_env, char **path)
 	return (1);
 }
 
-int		interpreteur(char **command, t_list **start_env, char **path)
+int		interpreteur(char **command, t_list **start_env, char **path,\
+		char **pwd)
 {
 	if (ft_strcmp(command[0], "cd") == 0)
 	{
-		change_directory(*start_env, command);
+		change_directory(start_env, command, pwd);
+	//	ft_putendl(*pwd);
 		return (1);
 	}
 	if (ft_strcmp(command[0], "env") == 0)
@@ -59,7 +63,7 @@ int		interpreteur(char **command, t_list **start_env, char **path)
 		return (1);
 	}
 	if (ft_strcmp(command[0], "exit") == 0)
-		return (ft_exit(command, *start_env, path));
+		return (ft_exit(command, *start_env, path, *pwd));
 	return (0);
 }
 
@@ -127,6 +131,8 @@ void	child_process(char **path, char **ar, char **env)
 		if (test_path(path, ar[0]) == 0)
 			ex_without_path(ar, env);
 	}
+	free_double_tab(ar);
+	free_double_tab(env);
 	free_double_tab(path);
 	exit(0);
 }
@@ -143,7 +149,10 @@ void	sys_command(char **path, char **ar, char **env)
 	else if (pid < 0)
 		ft_putstr("fork_err");
 	else
+	{
+		free_double_tab(env);
 		waitpid(pid, &i, 0);
+	}
 }
 
 char	*epur_str(char *str)
@@ -194,14 +203,15 @@ void	shell(char **environ)
 	char	*line;
 	char	**ar;
 	t_list	*start_env;
-	char	**path;
 	char	*tmp;
+	t_env	var;
 
 	ar = NULL;
 	line = NULL;
 	start_env = init_env(environ);
-	start_env = prompt(start_env);
-	path = init_path(path, start_env);
+	var.path = init_path(var.path, start_env);
+	var.pwd = init_pwd(var.pwd, start_env);
+	prompt(var.pwd);
 	signal(SIGINT, SIG_IGN);
 	while (get_next_line(0, &line))
 	{
@@ -212,9 +222,11 @@ void	shell(char **environ)
 		ar = ft_strsplit(line, ' ');
 		free(line);
 		ar = check_tild(ar, start_env);
-		if (*ar != NULL && interpreteur(ar, &start_env, path) == 0)
-			sys_command(path, ar, lst_to_tab(start_env));
+		if (*ar != NULL && interpreteur(ar, &start_env, var.path, &var.pwd) == 0)
+			sys_command(var.path, ar, lst_to_tab(start_env));
 		free_double_tab(ar);
-		prompt(start_env);
+	//	ft_putstr("next prompt");
+	//	ft_putendl(var.pwd);
+		prompt(var.pwd);
 	}
 }

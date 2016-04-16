@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 13:20:21 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/15 17:16:04 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/16 19:10:59 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,14 @@ t_list	*init_env(char **env)
 		tmp = tmp->next;
 	}
 	return (start);
+}
+
+char	*init_pwd(char *pwd, t_list *env)
+{
+	char *tmp;
+
+	tmp = getcwd(NULL, 0);
+	pwd = ft_strdup(tmp);
+	free(tmp);
+	return (pwd);
 }

@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/04 12:23:34 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/11 18:41:18 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/16 14:27:56 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,4 +79,27 @@ char	*get_value_env(t_list *start_env, char *to_find, int size_to_find)
 		tmp_l = tmp_l->next;
 	}
 	return (NULL);
+}
+
+int		check_env_name(t_list *env, char *name)
+{
+	t_list *tmp;
+
+	tmp = env;
+	while (tmp)
+	{
+		if (ft_strncmp(tmp->content, name, ft_strlen(name)) == 0)
+			return (1);
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
+char	*ft_stradd(char *to_free, char *to_add)
+{
+	char *tmp;
+
+	tmp = ft_strjoin(to_free, to_add);
+	free(to_free);
+	return (tmp);
 }

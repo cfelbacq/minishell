@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:28 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/15 17:15:09 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/16 17:37:37 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,10 @@ int		env_flags(int *i, char **command, t_list **new_env)
 				return (u_opt());
 			}
 			if ((*new_env = ft_unsetenv(command[*i + 1], *new_env, 1)) == NULL)
+			{
+				free_lst(*new_env);
 				return (1);
+			}
 			*i = *i + 2;
 		}
 		else
@@ -109,6 +112,7 @@ int		env_ar(char **command, t_list *new_env, int *i, char **path)
 		else
 			print_env_err(command[*i]);
 	}
+	free_double_tab(tab);
 	free_lst(new_env);
 	return (1);
 }

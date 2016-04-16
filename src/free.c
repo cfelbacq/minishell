@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/14 15:25:06 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/14 15:46:28 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/16 12:48:40 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,15 @@ void	free_double_tab(char **tab)
 	int i;
 
 	i = 0;
-	while (tab[i] != NULL)
+	if (tab != NULL)
 	{
-		free(tab[i]);
-		i++;
+		while (tab[i] != NULL)
+		{
+			free(tab[i]);
+			i++;
+		}
+		free(tab);
 	}
-	free(tab);
 }
 
 void	free_lst(t_list *lst)

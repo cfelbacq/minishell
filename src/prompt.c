@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/11 18:34:54 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/15 16:30:55 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/16 14:41:06 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,9 @@ static	char	*last_word_after_c(char c, char *str)
 	return (NULL);
 }
 
-t_list			*prompt(t_list *env)
+void			prompt(char *pwd)
 {
-	if (check_env_name(env, "PWD") == 0)
-		env = ft_setenv(ft_strjoin("PWD=", getcwd(NULL, 0)), env);
 	ft_putstr("$> ");
-	if (check_env_name(env, "PWD") == 1)
-		last_word_after_c('/', get_value_env(env, "PWD", 3));
+	last_word_after_c('/', pwd);
 	ft_putstr(": ");
-	return (env);
 }
