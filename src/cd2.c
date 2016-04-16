@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/11 17:31:09 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/16 19:13:59 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/16 20:07:04 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ char	*epur_slashe(char *tmp)
 	int		i;
 	int		j;
 
-	//ft_putendl(tmp);
 	j = 0;
 	new = ft_strnew(sizeof(char) * ft_strlen(tmp) + 1);
 	i = 0;
@@ -119,6 +118,14 @@ char	*cd_dir(t_list **env, char *ar, int p, char **v_pwd)
 	return (curpath);
 }
 
+char	*print_cd_double_ad_err(char *ar, char *new)
+{
+	ft_putstr_fd("cd: string not in pwd: ", 2);
+	ft_putendl_fd(ar, 2);
+	free(new);
+	return (NULL);
+}
+
 char	*cd_double_ar(char **ar, t_list **env, int p, int i, char **v_pwd)
 {
 	char *new;
@@ -150,7 +157,5 @@ char	*cd_double_ar(char **ar, t_list **env, int p, int i, char **v_pwd)
 		}
 		return (new);
 	}
-	ft_putstr_fd("cd: string not in pwd: ", 2);
-	ft_putendl_fd(ar[i], 2);
-	return (NULL);
+	return (print_cd_double_ad_err(ar[i], new));
 }

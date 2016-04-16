@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/11 17:26:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/16 19:08:30 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/16 19:55:27 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,7 @@ char	*ins_slashes(t_list *start, int p)
 	int		i;
 
 	i = 0;
-	path = ft_strnew(sizeof(char) * len_of_word_l(start));
-	//path = (char *)ft_memalloc(sizeof(char) * len_of_word_l(start));
+	path = ft_strnew(len_of_word_l(start) + 1);
 	tmp = start;
 	while (tmp != NULL)
 	{
@@ -95,6 +94,5 @@ char	*epur_path(char *path, int p)
 	tmp = ins_slashes(path_to_epur, p);
 	free_lst(path_to_epur);
 	free(path);
-//	free_lst(path_to_epur);
 	return (tmp);
 }

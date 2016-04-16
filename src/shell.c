@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:57:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/16 18:38:10 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/16 20:20:05 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,12 @@ int		ft_exit(char **command, t_list *start_env, char **path, char *pwd)
 	return (1);
 }
 
-int		interpreteur(char **command, t_list **start_env, char **path,\
+int		interpreter(char **command, t_list **start_env, char **path,\
 		char **pwd)
 {
 	if (ft_strcmp(command[0], "cd") == 0)
 	{
 		change_directory(start_env, command, pwd);
-	//	ft_putendl(*pwd);
 		return (1);
 	}
 	if (ft_strcmp(command[0], "env") == 0)
@@ -55,8 +54,8 @@ int		interpreteur(char **command, t_list **start_env, char **path,\
 		pre_setenv(command, start_env);
 		return (1);
 	}
-	/*	if (ft_strcmp(command[0], "./minishell") == 0)
-		ft_setenv(ft_strjoin("SHLVL=", (ft_itoa(ft_atoi(get_value_env(*start_env, "SHLVL", 5)) + 1))), *start_env);*/ //VOIR BONUS (NE PEUT ETRE QUE UN NOMBRE)
+		if (ft_strcmp(command[0], "./minishell") == 0)
+		ft_setenv(ft_strjoin("SHLVL=", (ft_itoa(ft_atoi(get_value_env(*start_env, "SHLVL", 5)) + 1))), *start_env); //VOIR BONUS (NE PEUT ETRE QUE UN NOMBRE)
 	if (ft_strcmp(command[0], "unsetenv") == 0)
 	{
 		pre_unsetenv(command, start_env);
@@ -161,7 +160,7 @@ char	*epur_str(char *str)
 	int		j;
 	char	*tmp;
 
-	tmp = (char *)ft_memalloc(sizeof(char) * ft_strlen(str));
+	tmp = ft_strnew(ft_strlen(str) + 1);
 	j = 0;
 	i = 0;
 	while (str[i] != '\0')
@@ -218,15 +217,15 @@ void	shell(char **environ)
 		tmp = line;
 		line = ft_strtrim(line);
 		free(tmp);
-		//line = epur_str(line);
+		tmp = line;
+		line = epur_str(line);
+		free(tmp);
 		ar = ft_strsplit(line, ' ');
 		free(line);
 		ar = check_tild(ar, start_env);
-		if (*ar != NULL && interpreteur(ar, &start_env, var.path, &var.pwd) == 0)
+		if (*ar != NULL && interpreter(ar, &start_env, var.path, &var.pwd) == 0)
 			sys_command(var.path, ar, lst_to_tab(start_env));
 		free_double_tab(ar);
-	//	ft_putstr("next prompt");
-	//	ft_putendl(var.pwd);
 		prompt(var.pwd);
 	}
 }

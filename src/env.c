@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:28 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/16 17:37:37 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/16 20:15:14 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,12 @@ char	**split_after_env(char **tab, int i)
 	}
 	tab2[size] = NULL;
 	return (tab2);
+}
+
+int		print_env_ill(void)
+{
+	ft_putendl_fd("env: illegal option", 2);
+	return (1);
 }
 
 int		env_flags(int *i, char **command, t_list **new_env)
@@ -60,10 +66,7 @@ int		env_flags(int *i, char **command, t_list **new_env)
 			*i = *i + 2;
 		}
 		else
-		{
-			ft_putendl_fd("env: illegal option", 2);
-			return (1);
-		}
+			return (print_env_ill());
 	}
 	return (0);
 }

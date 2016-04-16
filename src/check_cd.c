@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/11 17:18:38 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/16 17:37:31 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/16 20:09:08 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,6 @@ int		check_tmp(char *tmp, int p, char *ar)
 	int		i;
 
 	i = 0;
-//	ft_putendl(tmp);
 	tmp_double = ft_strsplit(tmp, '/');
 	new = (char *)ft_memalloc(sizeof(char) * ft_strlen(tmp) + 1);
 	while (tmp_double[i] != NULL)
@@ -111,8 +110,6 @@ int		check_tmp(char *tmp, int p, char *ar)
 		if (ft_strcmp(new, "/") != 0)
 			new = ft_stradd(new, "/");
 		new = ft_stradd(new, tmp_double[i]);
-	//	ft_putstr("NEW :");
-	//	ft_putendl(new);
 		if (error_check_tmp(tmp, new, tmp_double, ar) == -1)
 			return (-1);
 		new = epur_path(new, p);

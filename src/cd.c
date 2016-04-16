@@ -6,11 +6,13 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 13:19:16 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/16 18:04:01 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/16 19:59:23 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+
 
 static	void	cd_dash(t_list **env, int p, char **v_pwd)
 {
@@ -27,7 +29,6 @@ static	void	cd_dash(t_list **env, int p, char **v_pwd)
 			return ;
 		free(tmp);
 		curpath = epur_path(curpath, p);
-//		ft_putstr("chdir(dash) : ");
 		ft_putendl(curpath);
 		chdir(curpath);
 		oldpwd = ft_strjoin("OLDPWD=", *v_pwd);
@@ -48,7 +49,6 @@ static	void	cd_home(t_list **env, int p, char **v_pwd)
 {
 	char *home;
 	char *oldpwd;
-	char *pwd;
 	char *tmp;
 
 	if (check_env_name(*env, "HOME") == 1)
@@ -64,16 +64,15 @@ static	void	cd_home(t_list **env, int p, char **v_pwd)
 			home = epur_path(home, p);
 			chdir(home);
 			oldpwd = ft_strjoin("OLDPWD=", *v_pwd);
-			pwd = ft_strjoin("PWD=", home);
+			tmp = ft_strjoin("PWD=", home);
 			*env = ft_setenv(oldpwd, *env);
-			*env = ft_setenv(pwd, *env);
+			*env = ft_setenv(tmp, *env);
 			free(*v_pwd);
 			*v_pwd = ft_strdup(home);
 			free(oldpwd);
-			free(pwd);
-			free(home);
+			free(tmp);
 		}
-
+		free(home);
 	}
 	else
 		ft_putendl_fd("cd: HOME not set", 2);
