@@ -6,11 +6,11 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/11 17:36:11 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/13 13:52:20 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/17 16:21:45 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 static	t_list	*free_if_dot(t_list *previous, t_list *tmp, t_list *start)
 {
@@ -29,21 +29,6 @@ static	t_list	*free_if_dot_dot(t_list *pre_pre, t_list *pre, t_list *tmp\
 	free(tmp->content);
 	free(tmp);
 	return (start);
-}
-
-int	check_dot(t_list *start)
-{
-	t_list *tmp;
-
-	tmp = start;
-	while (tmp)
-	{
-		if (ft_strcmp(tmp->content, ".") == 0 || ft_strcmp(tmp->content, "..")\
-				== 0)
-			return (0);
-		tmp = tmp->next;
-	}
-	return (1);
 }
 
 static	t_list	*free_dot_left(t_list *tmp, t_list *pre, t_list *pre_pre,\
@@ -73,7 +58,6 @@ static	void	for_love_of_norme(t_list **tmp, t_list **pre_pre, t_list **pre)
 
 t_list			*epur_list(t_list *start)
 {
-	t_list	*new;
 	t_list	*tmp;
 	t_list	*previous;
 	t_list	*pre_previous;

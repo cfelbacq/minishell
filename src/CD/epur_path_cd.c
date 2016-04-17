@@ -6,11 +6,11 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/11 17:26:37 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/16 19:55:27 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/17 16:01:12 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int		len_of_word_l(t_list *start)
 {

@@ -6,11 +6,11 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/11 17:18:38 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/16 20:09:08 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/17 16:01:03 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	cd_opt(int *i, int *p, char **ar)
 {
@@ -67,7 +67,7 @@ int		check_is_directory(char *curpath)
 		return (-1);
 }
 
-int	error_check_tmp(char *tmp, char *new, char **doubletab, char *ar)
+int		error_check_tmp(char *tmp, char *new, char **doubletab, char *ar)
 {
 	if (access(new, F_OK) == -1)
 	{

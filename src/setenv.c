@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 13:56:22 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/15 17:02:31 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/17 15:31:35 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ t_list		*ft_setenv(char *command, t_list *start_env)
 {
 	t_list	*tmp;
 	char	*tmp1;
-	t_list	*new;
 	t_list	*previous;
 
 	if (start_env == NULL)

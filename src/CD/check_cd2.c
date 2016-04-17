@@ -1,22 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   check_cd2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/03/22 14:14:38 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/17 14:58:38 by cfelbacq         ###   ########.fr       */
+/*   Created: 2016/04/17 16:20:46 by cfelbacq          #+#    #+#             */
+/*   Updated: 2016/04/17 16:21:42 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-int	main(int argc, char **argv, char **env)
+int	check_dot(t_list *start)
 {
-	argc = 2;
-	argv = NULL;
-	signal(SIGINT, SIG_IGN);
-	shell(env);
-	return (0);
+	t_list *tmp;
+
+	tmp = start;
+	while (tmp)
+	{
+		if (ft_strcmp(tmp->content, ".") == 0 || ft_strcmp(tmp->content, "..")\
+				== 0)
+			return (0);
+		tmp = tmp->next;
+	}
+	return (1);
 }

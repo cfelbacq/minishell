@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/28 12:28:28 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/04/16 20:15:14 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/04/17 16:39:42 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,6 @@ char	**split_after_env(char **tab, int i)
 	return (tab2);
 }
 
-int		print_env_ill(void)
-{
-	ft_putendl_fd("env: illegal option", 2);
-	return (1);
-}
-
 int		env_flags(int *i, char **command, t_list **new_env)
 {
 	while (command[*i] != NULL && command[*i][0] == '-'\
@@ -46,11 +40,7 @@ int		env_flags(int *i, char **command, t_list **new_env)
 	{
 		if (ft_strcmp(command[*i], "-i") == 0 \
 				|| ft_strcmp(command[*i], "-") == 0)
-		{
-			free_lst(*new_env);
-			*new_env = NULL;
-			*i = *i + 1;
-		}
+			env_free(i, new_env);
 		else if (ft_strcmp(command[*i], "-u") == 0)
 		{
 			if (command[*i + 1] == NULL)
@@ -96,11 +86,12 @@ int		test_access(char *command, char **path)
 int		env_ar(char **command, t_list *new_env, int *i, char **path)
 {
 	char **tab;
-	
+
 	tab = NULL;
 	while (command[*i] != NULL && check_egal(command[*i]) == 1)
 	{
-		new_env = ft_setenv(command[*i], new_env);
+		if (check_egal(command[*i]) == 1 && char_bef_egal(command[*i]) == 1)
+			new_env = ft_setenv(command[*i], new_env);
 		*i = *i + 1;
 	}
 	if (command[*i] == NULL)
